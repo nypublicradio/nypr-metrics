@@ -16,11 +16,11 @@ export default Service.extend({
     });
 
     this.get('hifi').on('audio-paused', (sound) => {
-      sound.one('audio-played', (s) => {
+      sound.one('audio-played', () => {
         audioPausedSound = null;
       });
       audioPausedSound = sound;
-    })
+    });
 
     this.get('hifi').on('current-sound-changed', ({previousSound, currentSound}) => {
 
@@ -32,7 +32,7 @@ export default Service.extend({
       // send listen analytic for audio play
       // resume or new play
 
-      if (previousSound && previousSound != audioEndedSound && previousSound != audioPausedSound) {
+      if (previousSound && previousSound !== audioEndedSound && previousSound !== audioPausedSound) {
         console.log('send interrupt event!');
         // send interrupt event for previousSound
       }
