@@ -381,7 +381,7 @@ export default Service.extend({
       return context;
     } else if (context === 'nav') {
       return 'Navigation';
-    } else {
+    } else if (!!context){
       return upperCamelize(context);
     }
   }
