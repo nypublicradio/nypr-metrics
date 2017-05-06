@@ -217,7 +217,7 @@ export default Service.extend({
   },
 
   _onStreamPause(sound) {
-    let stream = get(sound, 'metadata.contentModel');
+    let stream      = get(sound, 'metadata.contentModel');
     let playContext = get(sound, 'metadata.playContext');
 
     this._trackPlayerEvent({
@@ -239,6 +239,7 @@ export default Service.extend({
   _onBumperPause(sound) {
     let bumper = get(sound, 'metadata.contentModel');
     let bumperSetting = get(this, 'bumperState.autoplayChoice');
+
     this._trackPlayerEvent({
       action: 'Paused Bumper',
       label: `${bumperSetting}|Continuous Play`
