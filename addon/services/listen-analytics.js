@@ -52,7 +52,7 @@ export default Service.extend({
       audioPausedSound = sound;
     });
 
-    get(this, 'hifi').on('current-sound-changed', ({previousSound, currentSound}) => {
+    get(this, 'hifi').on('current-sound-changed', (currentSound, previousSound) => {
       let currentType     = currentSound.get('metadata.contentModelType');
       let currentContext  = currentSound.get('metadata.playContext');
 
