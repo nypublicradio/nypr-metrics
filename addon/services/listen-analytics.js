@@ -28,8 +28,8 @@ export default Service.extend({
     });
 
     Ember.$(window).on('beforeunload', () => {
-      if (this.get('currentSound.metadata.contentModel')) {
-        this._sendListenAction(this.get('currentSound.metadata.contentModel'), 'close');
+      if (this.get('currentSound')) {
+        this._sendListenAction(this.get('currentSound'), 'close');
       }
     });
 
@@ -104,7 +104,7 @@ export default Service.extend({
       region: upperCamelize(playContext)
     });
 
-    this._sendListenAction(story, 'finish');
+    this._sendListenAction(sound, 'finish');
   },
 
   _onAudioPaused(sound) {
@@ -126,7 +126,7 @@ export default Service.extend({
     let story       = get(sound, 'metadata.contentModel');
     let playContext = get(sound, 'metadata.playContext');
 
-    this._sendListenAction(story, action);
+    this._sendListenAction(sound, action);
     this._trackPlayerEvent({
       action: `Played Story "${story.get('title')}"`,
       withRegion: true,
@@ -166,12 +166,12 @@ export default Service.extend({
       label: get(story, 'audio')
     });
 
-    this._sendListenAction(story, 'pause');
+    this._sendListenAction(sound, 'pause');
   },
 
   _onDemandInterrupted(sound) {
     let story = get(sound, 'metadata.contentModel');
-    this._sendListenAction(story, 'interrupt');
+    this._sendListenAction(sound, 'interrupt');
   },
 
   _onStreamPlay(sound) {
@@ -189,7 +189,7 @@ export default Service.extend({
       label,
     });
 
-    this._sendListenAction(stream, 'start');
+    this._sendListenAction(sound, 'start');
 
     this._trackPlayerEventForNpr({
       category: 'Engagement',
@@ -233,7 +233,7 @@ export default Service.extend({
       label: `Streaming_${get(stream, 'name')}`
     });
 
-    this._sendListenAction(stream, 'pause');
+    this._sendListenAction(sound, 'pause');
   },
 
   _onBumperPause(sound) {
@@ -245,7 +245,7 @@ export default Service.extend({
       label: `${bumperSetting}|Continuous Play`
     });
 
-    this._sendListenAction(bumper, 'pause');
+    this._sendListenAction(sound, 'pause');
   },
 
   _onBumperPlay() {
@@ -308,13 +308,11 @@ export default Service.extend({
   },
 
   trackPositionChange(sound) {
-    let story = get(sound, 'metadata.contentModel');
-    this._sendListenAction(story, 'position');
+    this._sendListenAction(sound, 'position');
   },
 
   trackRewind(sound) {
-    let story = get(sound, 'metadata.contentModel');
-    this._sendListenAction(story, 'back_15');
+    this._sendListenAction(sound, 'back_15');
 
     this._trackPlayerEvent({
       action: 'Skip Fifteen Seconds Ahead',
@@ -323,8 +321,7 @@ export default Service.extend({
   },
 
   trackFastForward(sound) {
-    let story = get(sound, 'metadata.contentModel');
-    this._sendListenAction(story, 'forward_15');
+    this._sendListenAction(sound, 'forward_15');
 
     this._trackPlayerEvent({
       action: 'Skip Fifteen Seconds Ahead',
@@ -336,13 +333,17 @@ export default Service.extend({
   /* Tracking helpers ---------------------------------------------------------
     --------------------------------------------------------------------------*/
 
-  _sendListenAction(storyOrStream, type) {
+  _sendListenAction(sound, type) {
     let data = {
-      current_audio_position: this.get('position')
+      current_audio_position: sound.get('position')
     };
-    storyOrStream.forListenAction(data).then(d => {
-      this.get('dataPipeline').reportListenAction(type, d);
-    });
+
+    let storyOrStream = sound.get('metadata.contentModel');
+    if (storyOrStream.forListenAction) {
+      storyOrStream.forListenAction(data).then(d => {
+        this.get('dataPipeline').reportListenAction(type, d);
+      });
+    }
   },
 
   _trackCodecFailure({connectionName, error, url}, sound) {
