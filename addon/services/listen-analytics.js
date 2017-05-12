@@ -3,7 +3,6 @@ import Service from 'ember-service';
 import service from 'ember-service/inject';
 import computed from 'ember-computed';
 import get from 'ember-metal/get';
-import set from 'ember-metal/set';
 import { bind } from 'ember-runloop';
 import { classify as upperCamelize } from 'ember-string';
 
@@ -56,11 +55,9 @@ export default Service.extend({
       let currentType     = currentSound.get('metadata.contentModelType');
       let currentContext  = currentSound.get('metadata.playContext');
 
-      let previousContext, previousStory, previousType;
+      let previousType;
       if (previousSound) {
-        previousContext = previousSound.get('metadata.playContext');
         previousType    = previousSound.get('metadata.contentModelType');
-        previousStory   = previousSound.get('metadata.contentModel');
       }
 
       if (previousSound && previousSound !== audioEndedSound && previousSound !== audioPausedSound) {
@@ -170,7 +167,6 @@ export default Service.extend({
   },
 
   _onDemandInterrupted(sound) {
-    let story = get(sound, 'metadata.contentModel');
     this._sendListenAction(sound, 'interrupt');
   },
 
@@ -237,7 +233,6 @@ export default Service.extend({
   },
 
   _onBumperPause(sound) {
-    let bumper = get(sound, 'metadata.contentModel');
     let bumperSetting = get(this, 'bumperState.autoplayChoice');
 
     this._trackPlayerEvent({
@@ -383,7 +378,7 @@ export default Service.extend({
       return context;
     } else if (context === 'nav') {
       return 'Navigation';
-    } else if (!!context){
+    } else if (context){
       return upperCamelize(context);
     }
   }
