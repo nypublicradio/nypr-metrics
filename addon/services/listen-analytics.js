@@ -44,15 +44,6 @@ export default Service.extend({
     ---------------------------------------------------------------------------*/
 
   listenForTrackChanges() {
-    let audioEndedSound, audioPausedSound;
-
-    // get(this, 'hifi').on('audio-ended', (sound) => (audioEndedSound = sound));
-    // get(this, 'hifi').on('audio-paused', (sound) => {
-    //   console.log(`audio paused ${get(sound, 'metadata')}`);
-    //   sound.one('audio-played', () => (audioPausedSound = null));
-    //   audioPausedSound = sound;
-    // });
-
     get(this, 'hifi').on('current-sound-changed', (currentSound, previousSound) => {
       let currentType     = get(currentSound, 'metadata.contentModelType');
       let currentContext  = get(currentSound, 'metadata.playContext');
@@ -73,7 +64,6 @@ export default Service.extend({
     get(this, 'hifi').on('current-sound-interrupted', (currentSound) => {
       this._onDemandInterrupted(currentSound);
     });
-
   },
 
   /* Internal actions for logging events. Don't call these from the outside
