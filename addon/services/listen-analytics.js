@@ -5,6 +5,7 @@ import computed from 'ember-computed';
 import get from 'ember-metal/get';
 import { bind } from 'ember-runloop';
 import { classify as upperCamelize } from 'ember-string';
+const { getWithDefault } = Ember;
 
 const TWO_MINUTES     = 1000 * 60 * 2;
 
@@ -45,32 +46,34 @@ export default Service.extend({
   listenForTrackChanges() {
     let audioEndedSound, audioPausedSound;
 
-    get(this, 'hifi').on('audio-ended', (sound) => (audioEndedSound = sound));
-    get(this, 'hifi').on('audio-paused', (sound) => {
-      sound.one('audio-played', () => (audioPausedSound = null));
-      audioPausedSound = sound;
-    });
+    // get(this, 'hifi').on('audio-ended', (sound) => (audioEndedSound = sound));
+    // get(this, 'hifi').on('audio-paused', (sound) => {
+    //   console.log(`audio paused ${get(sound, 'metadata')}`);
+    //   sound.one('audio-played', () => (audioPausedSound = null));
+    //   audioPausedSound = sound;
+    // });
 
     get(this, 'hifi').on('current-sound-changed', (currentSound, previousSound) => {
-      let currentType     = currentSound.get('metadata.contentModelType');
-      let currentContext  = currentSound.get('metadata.playContext');
+      let currentType     = get(currentSound, 'metadata.contentModelType');
+      let currentContext  = get(currentSound, 'metadata.playContext');
 
       let previousType;
       if (previousSound) {
-        previousType    = previousSound.get('metadata.contentModelType');
+        previousType    = get(previousSound, 'metadata.contentModelType');
       }
 
-      if (previousSound && previousSound !== audioEndedSound && previousSound !== audioPausedSound) {
-        this._onDemandInterrupted(previousSound);
-      }
-
-      if (previousType === 'stream' && currentType === 'stream') {
+      if (previousType === 'stream' && currentType === 'stream' && currentSound !== previousSound) {
         this._onStreamSwitch(previousSound, currentSound);
       }
       else if (previousType === 'bumper' && currentContext === 'queue') {
         this._onQueueAutoplay();
       }
     });
+
+    get(this, 'hifi').on('current-sound-interrupted', (currentSound) => {
+      this._onDemandInterrupted(currentSound);
+    });
+
   },
 
   /* Internal actions for logging events. Don't call these from the outside
@@ -92,7 +95,7 @@ export default Service.extend({
 
   _onAudioEnded(sound) {
     let story = get(sound, 'metadata.contentModel');
-    let playContext = get(sound, 'metadata.playContext');
+    let playContext = getWithDefault(sound, 'metadata.playContext', "");
 
     this.__trackPlayerEvent({
       story,
@@ -121,11 +124,11 @@ export default Service.extend({
   _onDemandPlay(sound) {
     let action      = get(sound, 'position') === 0 ? 'start' : 'resume';
     let story       = get(sound, 'metadata.contentModel');
-    let playContext = get(sound, 'metadata.playContext');
+    let playContext = getWithDefault(sound, 'metadata.playContext', "");
 
     this._sendListenAction(sound, action);
     this._trackPlayerEvent({
-      action: `Played Story "${story.get('title')}"`,
+      action: `Played Story "${get(story, 'title')}"`,
       withRegion: true,
       region: upperCamelize(playContext),
       withAnalytics: true,
@@ -140,7 +143,7 @@ export default Service.extend({
     if (playContext === 'queue' || playContext === 'history') {
       this._trackPlayerEvent({
         action: 'Played Story from Queue',
-        label: story.get('title'),
+        label: get(story, 'title'),
         story
       });
     }
@@ -281,7 +284,7 @@ export default Service.extend({
       label: message
     });
     if (failures && failures.length) {
-      failures.forEach(failed => this.trackCodecFailure(failed));
+      failures.forEach(failed => this._trackCodecFailure(failed));
     }
   },
 
