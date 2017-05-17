@@ -300,7 +300,7 @@ export default Service.extend({
     let showTitle  = get(stream, 'currentShow.show_title') || get(stream, 'currentShow.title');
     let streamName = get(stream, 'name');
 
-    RSVP.Promise.resolve(get(stream, 'story')).then(story => {
+    Ember.RSVP.Promise.resolve(get(stream, 'story')).then(story => {
       let storyTitle = story ? get(story, 'title') : 'no title';
 
       this._trackPlayerEvent({
