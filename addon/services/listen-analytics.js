@@ -87,7 +87,7 @@ export default Service.extend({
     let story = get(sound, 'metadata.contentModel');
     let playContext = getWithDefault(sound, 'metadata.playContext', "");
 
-    this.__trackPlayerEvent({
+    this._trackPlayerEvent({
       story,
       action: 'Finished Story',
       withRegion: true,
@@ -127,7 +127,8 @@ export default Service.extend({
     this._trackPlayerEventForNpr({
       category: 'Engagement',
       action: 'On_demand_audio_play',
-      label: get(story, 'audio')
+      label: get(story, 'audio'),
+      story
     });
 
     if (playContext === 'queue' || playContext === 'history') {
@@ -153,7 +154,8 @@ export default Service.extend({
     this._trackPlayerEventForNpr({
       category: 'Engagement',
       action: 'On_demand_audio_pause',
-      label: get(story, 'audio')
+      label: get(story, 'audio'),
+      story
     });
 
     this._sendListenAction(sound, 'pause');
@@ -319,13 +321,14 @@ export default Service.extend({
   },
 
   trackPositionChange(sound) {
-    this._sendListenAction(sound, 'position');
+    this._sendListenAction(sound, 'set_position');
   },
 
   trackRewind(sound) {
     this._sendListenAction(sound, 'back_15');
 
     this._trackPlayerEvent({
+      story: get(sound, 'metadata.contentModel'),
       action: 'Skip Fifteen Seconds Ahead',
       withAnalytics: true
     });
@@ -335,6 +338,7 @@ export default Service.extend({
     this._sendListenAction(sound, 'forward_15');
 
     this._trackPlayerEvent({
+      story: get(sound, 'metadata.contentModel'),
       action: 'Skip Fifteen Seconds Ahead',
       withAnalytics: true
     });
@@ -350,7 +354,7 @@ export default Service.extend({
     };
 
     let storyOrStream = sound.get('metadata.contentModel');
-    if (storyOrStream.forListenAction) {
+    if (storyOrStream && storyOrStream.forListenAction) {
       storyOrStream.forListenAction(data).then(d => {
         this.get('dataPipeline').reportListenAction(type, d);
       });
@@ -359,6 +363,7 @@ export default Service.extend({
 
   _trackCodecFailure({connectionName, error, url}, sound) {
     this._trackPlayerEvent({
+      story: get(sound, 'metadata.contentModel'),
       action: `Codec Failure | ${connectionName}`,
       label: `reason: ${error} | bad url: ${url} | ${sound ? `good url: ${get(sound, 'url')}` : 'no successful url'}`
     });
