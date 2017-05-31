@@ -321,7 +321,7 @@ export default Service.extend({
   },
 
   trackPositionChange(sound) {
-    this._sendListenAction(sound, 'set_position');
+    this._sendListenAction(sound, 'position');
   },
 
   trackRewind(sound) {
