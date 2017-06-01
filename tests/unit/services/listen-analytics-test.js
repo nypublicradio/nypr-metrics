@@ -222,7 +222,6 @@ test('it calls _onStreamSwitch when audio is switched from one stream to another
   assert.equal(spy.callCount, 1, "should trigger when switching from stream to stream");
 });
 
-
 test('service passes correct attrs to data pipeline to report an on_demand listen action', function(assert) {
   let done = assert.async();
   let reportStub = sinon.stub();
