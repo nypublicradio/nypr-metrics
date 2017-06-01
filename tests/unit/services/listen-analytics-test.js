@@ -8,7 +8,7 @@ import wait from 'ember-test-helpers/wait';
 
 let server;
 moduleFor('service:listen-analytics', 'Unit | Service | listen analytics', {
-  needs: [...hifiNeeds],
+  needs: [...hifiNeeds, 'service:bumper-state'],
   beforeEach() {
     this.register('service:hifi', dummyHifi);
     this.inject.service('hifi');
