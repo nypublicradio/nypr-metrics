@@ -2,8 +2,11 @@ import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 import sinon from 'sinon';
 import hifiNeeds from 'dummy/tests/helpers/hifi-needs';
+import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 import { dummyHifi } from 'dummy/tests/helpers/hifi-integration-helpers';
+import wait from 'ember-test-helpers/wait';
 
+let server;
 moduleFor('service:listen-analytics', 'Unit | Service | listen analytics', {
   needs: [...hifiNeeds],
   beforeEach() {
@@ -23,9 +26,10 @@ moduleFor('service:listen-analytics', 'Unit | Service | listen analytics', {
 
     this.register('service:metrics', metrics);
     this.inject.service('metrics', metrics);
-
+    server = startMirage();
   },
   afterEach() {
+    server.shutdown();
   }
 });
 
@@ -216,4 +220,85 @@ test('it calls _onStreamSwitch when audio is switched from one stream to another
 
   hifi.trigger('current-sound-changed', stream2, stream1);
   assert.equal(spy.callCount, 1, "should trigger when switching from stream to stream");
+});
+
+
+test('service passes correct attrs to data pipeline to report an on_demand listen action', function(assert) {
+  let done = assert.async();
+  let reportStub = sinon.stub();
+  let interceptor = {
+    dataPipeline: {
+      reportListenAction: reportStub
+    }
+  }
+
+  let service = this.subject(interceptor);
+  let hifi = service.get('hifi');
+
+  let metadata1 = {
+    contentModelType: 'story',
+    contentId: 1,
+    contentModel: {
+      forListenAction: (data = {}) => {
+        return Ember.RSVP.Promise.resolve(Ember.assign(data, { audio_type: 'on_demand', cms_id: 1, item_type: 'episode' }));
+      }
+    }
+  };
+
+  let metadata2 = {
+    contentModelType: 'story',
+    contentId: 2,
+    contentModel: {
+      forListenAction: (data = {}) => {
+        return Ember.RSVP.Promise.resolve(Ember.assign(data, { audio_type: 'on_demand', cms_id: 2, item_type: 'episode' }));
+      }
+    }
+  };
+
+  hifi.play('/good/45000/test1.mp3', {metadata: metadata1}).then(() => {
+    hifi.fastForward(20000);
+    hifi.rewind(15000);
+    hifi.set('position', hifi.get('position') + 2000);
+    hifi.togglePause();
+    hifi.togglePause();
+
+    hifi.play('/good/10000/test2.mp3', {metadata: metadata2}).then(() => {
+      hifi.set('position', hifi.get('position') + 10000);
+      wait(1000).then(() => {
+        let reportCalls = reportStub.getCalls();
+
+        let expectedCalls = [
+          ['start', { audio_type: 'on_demand', cms_id: 1, item_type: 'episode', current_audio_position: 0 }],
+          ['forward_15', { audio_type: 'on_demand', cms_id: 1, item_type: 'episode', current_audio_position: 0 }],
+          // 'current_audio_position should be time when action happened, not target time'
+
+          ['back_15', { audio_type: 'on_demand', cms_id: 1, item_type: 'episode', current_audio_position: 20000 }],
+          // 'current_audio_position should be time when action happened, not target time'
+
+          ['position', { audio_type: 'on_demand', cms_id: 1, item_type: 'episode', current_audio_position: 5000 }],
+          // 'current_audio_position should be time when action happened, not target time'
+
+          ['pause', { audio_type: 'on_demand', cms_id: 1, item_type: 'episode', current_audio_position: 7000 }],
+          ['resume',{ audio_type: 'on_demand', cms_id: 1, item_type: 'episode', current_audio_position: 7000 }],
+          ['interrupt', { audio_type: 'on_demand', cms_id: 1, item_type: 'episode', current_audio_position: 7000 }],
+          ['pause', { audio_type: 'on_demand', cms_id: 1, item_type: 'episode', current_audio_position: 7000 }],
+
+          // now we're dealing with story 2
+          ['start', { audio_type: 'on_demand', cms_id: 2, item_type: 'episode', current_audio_position: 0 }],
+          ['position', { audio_type: 'on_demand', cms_id: 2, item_type: 'episode', current_audio_position: 0 }],
+          // 'current_audio_position should be time when action happened, not target time'
+
+          ['finish', { audio_type: 'on_demand', cms_id: 2, item_type: 'episode', current_audio_position: 10000 }],
+        ];
+
+        assert.deepEqual(reportCalls.map(r => r.args[0]), expectedCalls.map(e => e[0]), `should have the specified calls`);
+
+        reportCalls.forEach((reportCall, index) => {
+          assert.deepEqual(reportCall.args, expectedCalls[index], `${expectedCalls[index][0]} should have the correct arguments`)
+        });
+
+        done();
+      });
+    });
+  });
 });

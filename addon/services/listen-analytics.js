@@ -33,9 +33,12 @@ export default Service.extend({
       }
     });
 
-    get(this, 'hifi').on('audio-played', bind(this, this._onAudioPlayed));
-    get(this, 'hifi').on('audio-paused', bind(this, this._onAudioPaused));
-    get(this, 'hifi').on('audio-ended',  bind(this, this._onAudioEnded));
+    get(this, 'hifi').on('audio-played',               bind(this, this._onAudioPlayed));
+    get(this, 'hifi').on('audio-paused',               bind(this, this._onAudioPaused));
+    get(this, 'hifi').on('audio-ended',                bind(this, this._onAudioEnded));
+    get(this, 'hifi').on('audio-position-will-change', bind(this, this._onAudioPositionWillChange));
+    get(this, 'hifi').on('audio-will-rewind',          bind(this, this._onAudioWillRewind));
+    get(this, 'hifi').on('audio-will-fast-forward',    bind(this, this._onAudioWillFastForward));
 
     this._super(...arguments);
   },
@@ -260,6 +263,29 @@ export default Service.extend({
     });
   },
 
+  _onAudioPositionWillChange(sound) {
+    this._sendListenAction(sound, 'position');
+  },
+
+  _onAudioWillRewind(sound) {
+    this._sendListenAction(sound, 'back_15');
+
+    this._trackPlayerEvent({
+      story: get(sound, 'metadata.contentModel'),
+      action: 'Skip Fifteen Seconds Ahead',
+      withAnalytics: true
+    });
+  },
+
+  _onAudioWillFastForward(sound) {
+    this._sendListenAction(sound, 'forward_15');
+
+    this._trackPlayerEvent({
+      story: get(sound, 'metadata.contentModel'),
+      action: 'Skip Fifteen Seconds Ahead',
+      withAnalytics: true
+    });
+  },
 
   /*  Called externally -------------------------------------------------------
     --------------------------------------------------------------------------*/
@@ -317,30 +343,6 @@ export default Service.extend({
           story
         });
       }
-    });
-  },
-
-  trackPositionChange(sound) {
-    this._sendListenAction(sound, 'position');
-  },
-
-  trackRewind(sound) {
-    this._sendListenAction(sound, 'back_15');
-
-    this._trackPlayerEvent({
-      story: get(sound, 'metadata.contentModel'),
-      action: 'Skip Fifteen Seconds Ahead',
-      withAnalytics: true
-    });
-  },
-
-  trackFastForward(sound) {
-    this._sendListenAction(sound, 'forward_15');
-
-    this._trackPlayerEvent({
-      story: get(sound, 'metadata.contentModel'),
-      action: 'Skip Fifteen Seconds Ahead',
-      withAnalytics: true
     });
   },
 
