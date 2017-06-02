@@ -2,11 +2,9 @@ import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 import sinon from 'sinon';
 import hifiNeeds from 'dummy/tests/helpers/hifi-needs';
-import { startMirage } from 'dummy/initializers/ember-cli-mirage';
 import { dummyHifi } from 'dummy/tests/helpers/hifi-integration-helpers';
 import wait from 'ember-test-helpers/wait';
 
-let server;
 moduleFor('service:listen-analytics', 'Unit | Service | listen analytics', {
   needs: [...hifiNeeds, 'service:bumper-state'],
   beforeEach() {
@@ -26,10 +24,8 @@ moduleFor('service:listen-analytics', 'Unit | Service | listen analytics', {
 
     this.register('service:metrics', metrics);
     this.inject.service('metrics', metrics);
-    server = startMirage();
   },
   afterEach() {
-    server.shutdown();
   }
 });
 
