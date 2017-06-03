@@ -20,12 +20,10 @@ moduleFor('service:listen-analytics', 'Unit | Service | listen analytics', {
     });
 
     this.register('service:data-pipeline', pipeline);
-    this.inject.service('dataPipeline', pipeline);
+    this.inject.service('dataPipeline');
 
     this.register('service:metrics', metrics);
-    this.inject.service('metrics', metrics);
-  },
-  afterEach() {
+    this.inject.service('metrics');
   }
 });
 
