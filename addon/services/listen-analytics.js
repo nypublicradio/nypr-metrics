@@ -27,11 +27,13 @@ export default Service.extend({
       label: 'playerPing'
     });
 
-    Ember.$(window).on('beforeunload', () => {
-      if (this.get('currentSound')) {
-        this._sendListenAction(this.get('currentSound'), 'close');
-      }
-    });
+    if (!Ember.testing) {
+      Ember.$(window).on('beforeunload', () => {
+        if (this.get('currentSound')) {
+          this._sendListenAction(this.get('currentSound'), 'close');
+        }
+      });
+    }
 
     get(this, 'hifi').on('audio-played',               bind(this, this._onAudioPlayed));
     get(this, 'hifi').on('audio-paused',               bind(this, this._onAudioPaused));
