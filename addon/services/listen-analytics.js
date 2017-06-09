@@ -14,7 +14,6 @@ export default Service.extend({
   dataPipeline: service(),
   metrics     : service(),
   poll        : service(),
-  bumperState : service(),
   currentSound: computed.reads('hifi.currentSound'),
   sessionPing : TWO_MINUTES,
 
@@ -233,7 +232,7 @@ export default Service.extend({
   },
 
   _onBumperPause(sound) {
-    let bumperSetting = get(this, 'bumperState.autoplayChoice');
+    let bumperSetting = get(sound, 'metadata.autoplayChoice');
 
     this._trackPlayerEvent({
       action: 'Paused Bumper',
