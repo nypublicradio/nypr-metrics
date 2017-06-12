@@ -1,1 +1,1 @@
-export { default } from 'nypr-audio-services/services/listen-analytics';
+export { default } from "nypr-metrics/services/listen-analytics";
