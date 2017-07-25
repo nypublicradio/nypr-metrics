@@ -260,15 +260,12 @@ test("service passes correct attrs to data pipeline to report an on_demand liste
     contentModelType: "story",
     contentId: 1,
     contentModel: {
-      forListenAction: (data = {}) => {
-        return Ember.RSVP.Promise.resolve(
-          Ember.assign(data, {
-            audio_type: "on_demand",
-            cms_id: 1,
-            item_type: "episode"
-          })
-        );
-      }
+
+    },
+    analytics: {
+      audio_type: "on_demand",
+      cms_id: 1,
+      item_type: "episode"
     }
   };
 
@@ -276,15 +273,12 @@ test("service passes correct attrs to data pipeline to report an on_demand liste
     contentModelType: "story",
     contentId: 2,
     contentModel: {
-      forListenAction: (data = {}) => {
-        return Ember.RSVP.Promise.resolve(
-          Ember.assign(data, {
-            audio_type: "on_demand",
-            cms_id: 2,
-            item_type: "episode"
-          })
-        );
-      }
+
+    },
+    analytics: {
+      audio_type: "on_demand",
+      cms_id: 2,
+      item_type: "episode"
     }
   };
 

@@ -352,15 +352,13 @@ export default Service.extend({
     --------------------------------------------------------------------------*/
 
   _sendListenAction(sound, type) {
-    let data = {
-      current_audio_position: sound.get('position')
-    };
+    let position = sound.get('position');
+    if (sound.get('metadata.analytics')) {
+      let analyticsData = Object.assign({
+        current_audio_position: position
+      }, sound.get('metadata.analytics'));
 
-    let storyOrStream = sound.get('metadata.contentModel');
-    if (storyOrStream && storyOrStream.forListenAction) {
-      storyOrStream.forListenAction(data).then(d => {
-        this.get('dataPipeline').reportListenAction(type, d);
-      });
+      this.get('dataPipeline').reportListenAction(type, analyticsData);
     }
   },
 
