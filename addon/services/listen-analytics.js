@@ -66,7 +66,15 @@ export default Service.extend({
     });
 
     get(this, 'hifi').on('current-sound-interrupted', (currentSound) => {
-      this._onDemandInterrupted(currentSound);
+
+      let type = get(currentSound, 'metadata.contentModelType');
+
+      if (type === 'story') { // on demand
+        this._onDemandInterrupted(currentSound);
+      }
+      else if (type === 'stream') {
+        this._onStreamInterrupted(currentSound);
+      }
     });
   },
 
@@ -116,7 +124,7 @@ export default Service.extend({
   },
 
   _onDemandPlay(sound) {
-    let action      = get(sound, 'position') === 0 ? 'start' : 'resume';
+    let action      = get(sound, 'hasPlayed') ? 'resume' : 'start';
     let story       = get(sound, 'metadata.contentModel');
     let playContext = getWithDefault(sound, 'metadata.playContext', "");
 
@@ -166,6 +174,10 @@ export default Service.extend({
   },
 
   _onDemandInterrupted(sound) {
+    this._sendListenAction(sound, 'interrupt');
+  },
+
+  _onStreamInterrupted(sound) {
     this._sendListenAction(sound, 'interrupt');
   },
 

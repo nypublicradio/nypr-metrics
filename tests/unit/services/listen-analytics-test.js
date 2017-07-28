@@ -124,8 +124,8 @@ test("it calls _onDemandInterrupted when audio is interrupted", function(
     contentModel: {}
   };
 
-  hifi.play("/good/15000/test1.mp3", { metadata1 }).then(() => {
-    hifi.play("/good/12000/test2.mp3", { metadata2 }).then(() => {
+  hifi.play("/good/15000/test1.mp3", { metadata: metadata1 }).then(() => {
+    hifi.play("/good/12000/test2.mp3", { metadata: metadata2 }).then(() => {
       assert.equal(
         interruptSpy.callCount,
         1,
