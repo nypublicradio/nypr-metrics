@@ -34,6 +34,7 @@ export default Service.extend({
     }
 
     this.set('listenActionQueue', Ember.A());
+    this.set('googleQueue', Ember.A());
 
     get(this, 'hifi').on('audio-played',               bind(this, '_onAudioPlayed'));
     get(this, 'hifi').on('audio-paused',               bind(this, '_onAudioPaused'));
@@ -411,7 +412,6 @@ export default Service.extend({
   },
 
   _trackPlayerEvent(options) {
-    let metrics        = get(this, 'metrics');
     let {action, label, withRegion, region, withAnalytics} = options;
     let analyticsCode  = '';
     let story          = options.story || get(this, 'currentAudio');
@@ -427,7 +427,31 @@ export default Service.extend({
     if (withRegion || withAnalytics) {
       label = `${region}${analyticsCode}`;
     }
-    metrics.trackEvent('GoogleAnalytics', {category, action, label});
+    
+    let queue = get(this, 'googleQueue');
+    queue.push({category, action, label});
+    debounce(this, '_flushGoogle', 100);
+  },
+  
+  _flushGoogle() {
+    let queue = get(this, 'googleQueue');
+    
+    if (queue.length === 0) {
+      return;
+    }
+    queue.forEach(({category, action, label}, index) => {
+      if (action.match(/Pause/) && queue.slice(index).find(info => info.action.match(/Finish/))) {
+        return;
+      }
+      else {
+        let metrics = get(this, 'metrics');
+        metrics.trackEvent('GoogleAnalytics', {category, action, label});
+      }
+    });
+
+    if (!get(this, 'isDestroying')) {
+      set(this, 'googleQueue', Ember.A());
+    }
   },
 
   _trackPlayerEventForNpr(options) {
