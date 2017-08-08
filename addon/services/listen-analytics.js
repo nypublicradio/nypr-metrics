@@ -21,7 +21,7 @@ export default Service.extend({
   init() {
     get(this, 'poll').addPoll({
       interval: get(this, 'sessionPing'),
-      callback: bind(this, this._onPlayerPing),
+      callback: bind(this, '_onPlayerPing'),
       label: 'playerPing'
     });
 
@@ -35,14 +35,14 @@ export default Service.extend({
 
     this.set('listenActionQueue', Ember.A());
 
-    get(this, 'hifi').on('audio-played',               bind(this, this._onAudioPlayed));
-    get(this, 'hifi').on('audio-paused',               bind(this, this._onAudioPaused));
-    get(this, 'hifi').on('audio-ended',                bind(this, this._onAudioEnded));
-    get(this, 'hifi').on('audio-position-will-change', bind(this, this._onAudioPositionWillChange));
-    get(this, 'hifi').on('audio-will-rewind',          bind(this, this._onAudioWillRewind));
-    get(this, 'hifi').on('audio-will-fast-forward',    bind(this, this._onAudioWillFastForward));
-    get(this, 'hifi').on('current-sound-interrupted',  bind(this, this._onCurrentSoundInterrupted));
-    get(this, 'hifi').on('current-sound-changed',      bind(this, this._onCurrentSoundChanged));
+    get(this, 'hifi').on('audio-played',               bind(this, '_onAudioPlayed'));
+    get(this, 'hifi').on('audio-paused',               bind(this, '_onAudioPaused'));
+    get(this, 'hifi').on('audio-ended',                bind(this, '_onAudioEnded'));
+    get(this, 'hifi').on('audio-position-will-change', bind(this, '_onAudioPositionWillChange'));
+    get(this, 'hifi').on('audio-will-rewind',          bind(this, '_onAudioWillRewind'));
+    get(this, 'hifi').on('audio-will-fast-forward',    bind(this, '_onAudioWillFastForward'));
+    get(this, 'hifi').on('current-sound-interrupted',  bind(this, '_onCurrentSoundInterrupted'));
+    get(this, 'hifi').on('current-sound-changed',      bind(this, '_onCurrentSoundChanged'));
 
     this._super(...arguments);
   },
