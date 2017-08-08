@@ -286,7 +286,7 @@ export default Service.extend({
 
     this._trackPlayerEvent({
       story: get(sound, 'metadata.contentModel'),
-      action: 'Skip Fifteen Seconds Ahead',
+      action: 'Skip Fifteen Seconds Back',
       withAnalytics: true
     });
   },
