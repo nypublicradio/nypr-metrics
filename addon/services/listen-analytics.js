@@ -4,7 +4,7 @@ import service from 'ember-service/inject';
 import computed from 'ember-computed';
 import get from 'ember-metal/get';
 import set from 'ember-metal/set';
-import { bind } from 'ember-runloop';
+import { bind, debounce } from 'ember-runloop';
 import { classify as upperCamelize } from 'ember-string';
 const { getWithDefault } = Ember;
 
@@ -375,9 +375,7 @@ export default Service.extend({
       let queue = get(this, 'listenActionQueue')
 
       queue.push({sound, type, analyticsData});
-      Ember.run.scheduleOnce('actions', () => {
-        this._flushListenActions();
-      });
+      debounce(this, '_flushListenActions', 100);
     }
   },
 
