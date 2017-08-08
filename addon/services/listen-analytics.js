@@ -103,6 +103,7 @@ export default Service.extend({
       story,
       action: 'Finished Story',
       withRegion: true,
+      withAnalytics: true,
       region: upperCamelize(playContext)
     });
 
