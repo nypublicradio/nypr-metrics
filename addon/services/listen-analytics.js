@@ -3,6 +3,7 @@ import Service from 'ember-service';
 import service from 'ember-service/inject';
 import computed from 'ember-computed';
 import get from 'ember-metal/get';
+import set from 'ember-metal/set';
 import { bind } from 'ember-runloop';
 import { classify as upperCamelize } from 'ember-string';
 const { getWithDefault } = Ember;
@@ -18,8 +19,6 @@ export default Service.extend({
   sessionPing : TWO_MINUTES,
 
   init() {
-    this.listenForTrackChanges();
-
     get(this, 'poll').addPoll({
       interval: get(this, 'sessionPing'),
       callback: bind(this, this._onPlayerPing),
@@ -34,12 +33,16 @@ export default Service.extend({
       });
     }
 
+    this.set('listenActionQueue', Ember.A());
+
     get(this, 'hifi').on('audio-played',               bind(this, this._onAudioPlayed));
     get(this, 'hifi').on('audio-paused',               bind(this, this._onAudioPaused));
     get(this, 'hifi').on('audio-ended',                bind(this, this._onAudioEnded));
     get(this, 'hifi').on('audio-position-will-change', bind(this, this._onAudioPositionWillChange));
     get(this, 'hifi').on('audio-will-rewind',          bind(this, this._onAudioWillRewind));
     get(this, 'hifi').on('audio-will-fast-forward',    bind(this, this._onAudioWillFastForward));
+    get(this, 'hifi').on('current-sound-interrupted',  bind(this, this._onCurrentSoundInterrupted));
+    get(this, 'hifi').on('current-sound-changed',      bind(this, this._onCurrentSoundChanged));
 
     this._super(...arguments);
   },
@@ -47,39 +50,36 @@ export default Service.extend({
   /* Monitoring hifi events and then logging analytics -------------------------
     ---------------------------------------------------------------------------*/
 
-  listenForTrackChanges() {
-    get(this, 'hifi').on('current-sound-changed', (currentSound, previousSound) => {
-      let currentType     = get(currentSound, 'metadata.contentModelType');
-      let currentContext  = get(currentSound, 'metadata.playContext');
-
-      let previousType;
-      if (previousSound) {
-        previousType    = get(previousSound, 'metadata.contentModelType');
-      }
-
-      if (previousType === 'stream' && currentType === 'stream' && currentSound !== previousSound) {
-        this._onStreamSwitch(previousSound, currentSound);
-      }
-      else if (previousType === 'bumper' && currentContext === 'queue') {
-        this._onQueueAutoplay();
-      }
-    });
-
-    get(this, 'hifi').on('current-sound-interrupted', (currentSound) => {
-
-      let type = get(currentSound, 'metadata.contentModelType');
-
-      if (type === 'story') { // on demand
-        this._onDemandInterrupted(currentSound);
-      }
-      else if (type === 'stream') {
-        this._onStreamInterrupted(currentSound);
-      }
-    });
-  },
-
   /* Internal actions for logging events. Don't call these from the outside
     ----------------------------------------------------------------------------------*/
+
+  _onCurrentSoundChanged(currentSound, previousSound) {
+    let currentType     = get(currentSound, 'metadata.contentModelType');
+    let currentContext  = get(currentSound, 'metadata.playContext');
+
+    let previousType;
+    if (previousSound) {
+      previousType    = get(previousSound, 'metadata.contentModelType');
+    }
+
+    if (previousType === 'stream' && currentType === 'stream' && currentSound !== previousSound) {
+      this._onStreamSwitch(previousSound, currentSound);
+    }
+    else if (previousType === 'bumper' && currentContext === 'queue') {
+      this._onQueueAutoplay();
+    }
+  },
+
+  _onCurrentSoundInterrupted(currentSound) {
+    let type = get(currentSound, 'metadata.contentModelType');
+
+    if (type === 'story') { // on demand
+      this._onDemandInterrupted(currentSound);
+    }
+    else if (type === 'stream') {
+      this._onStreamInterrupted(currentSound);
+    }
+  },
 
   _onAudioPlayed(sound) {
     let type = get(sound, 'metadata.contentModelType');
@@ -365,12 +365,41 @@ export default Service.extend({
 
   _sendListenAction(sound, type) {
     let position = sound.get('position');
+
     if (sound.get('metadata.analytics')) {
       let analyticsData = Object.assign({
         current_audio_position: position
       }, sound.get('metadata.analytics'));
 
-      this.get('dataPipeline').reportListenAction(type, analyticsData);
+      let queue = get(this, 'listenActionQueue')
+
+      queue.push({sound, type, analyticsData});
+      Ember.run.scheduleOnce('actions', () => {
+        this._flushListenActions();
+      });
+    }
+  },
+
+  _flushListenActions() {
+    let queue = get(this, 'listenActionQueue');
+
+    if (queue.length === 0) {
+      return;
+    }
+
+    queue.forEach(({sound, type, analyticsData}, index) => {
+      if (type === 'pause' && queue.slice(index).find(info => {
+        return (info.sound.url === sound.url) && (info.type === 'finish');
+      })) {
+        // ignore pause if it's followed by a finish
+      }
+      else {
+        this.get('dataPipeline').reportListenAction(type, analyticsData);
+      }
+    });
+
+    if (!get(this, 'isDestroying')) {
+      set(this, 'listenActionQueue', Ember.A());
     }
   },
 
