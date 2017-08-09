@@ -284,22 +284,10 @@ export default Service.extend({
 
   _onAudioWillRewind(sound) {
     this._sendListenAction(sound, 'back_15');
-
-    this._trackPlayerEvent({
-      story: get(sound, 'metadata.contentModel'),
-      action: 'Skip Fifteen Seconds Back',
-      withAnalytics: true
-    });
   },
 
   _onAudioWillFastForward(sound) {
     this._sendListenAction(sound, 'forward_15');
-
-    this._trackPlayerEvent({
-      story: get(sound, 'metadata.contentModel'),
-      action: 'Skip Fifteen Seconds Ahead',
-      withAnalytics: true
-    });
   },
 
   /*  Called externally -------------------------------------------------------
