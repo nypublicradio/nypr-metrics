@@ -1,26 +1,26 @@
 # nypr-metrics
 
-This README outlines the details of collaborating on this Ember addon.
+## Client Integration
 
-## Installation
+Client app should extend `data-pipeline` service and add an `authorize` method, and a `browserId` property, like so:
 
-* `git clone <repository-url>` this repository
-* `cd nypr-metrics`
-* `npm install`
 
-## Running
+```javascript
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+import DataPipeline from 'nypr-metrics/services/data-pipeline';
+import Ember from 'ember';
+import computed from 'ember-computed';
 
-## Running Tests
+export default DataPipeline.extend({
+  session: Ember.inject.service(),
+  browserId: computed.readOnly('session.data.browserId'),
+  authorize(fetchOptions) {
+    this.get('session').authorize('authorizer:nypr', (header, value) => {
+      fetchOptions.headers[header] = value;
+    });
 
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+    return fetchOptions;
+  }
 
-## Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+})
+```
