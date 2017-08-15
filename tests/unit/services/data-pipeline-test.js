@@ -1,21 +1,10 @@
 import { moduleFor, test } from 'ember-qunit';
 import sinon from 'sinon';
 import config from 'ember-get-config';
-import Ember from 'ember';
 
 moduleFor('service:data-pipeline', 'Unit | Service | data pipeline', {
   // Specify the other units that are required for this test.
-  needs: ['service:session', 'service:poll'],
-  beforeEach() {
-    const sessionStub = Ember.Service.extend({
-      data: {
-        browserId: 'secrets'
-      }
-    });
-
-    this.register('service:session', sessionStub);
-    this.inject.service('session');
-  }
+  needs: ['service:poll']
 });
 
 // Replace this with your real tests.
@@ -36,6 +25,7 @@ test('it reports the proper data for an item view', function(assert) {
   }, testData);
 
   let service = this.subject({
+    browserId: 'secrets',
     authorize(fetchOptions) {
       fetchOptions['client'] = 'wnyc_web'; // fake authentication from client
       return fetchOptions;
@@ -67,6 +57,7 @@ test('it reports the proper data for on demand listen actions', function(assert)
   let testData = {cms_id: 1, item_type: 'story'};
 
   let service = this.subject({
+    browserId: 'secrets',
     authorize(fetchOptions) {
       fetchOptions['client'] = 'wnyc_web'; // fake authentication from client
     },
@@ -132,6 +123,7 @@ test('data pipeline tracks delta properly', function(assert) {
   let clock = sinon.useFakeTimers(now);
   let deltaShouldbe = 500;
   let service = this.subject({
+    browserId: 'secrets',
     _send({delta}) {
       switch(currentCall) {
         case 1:

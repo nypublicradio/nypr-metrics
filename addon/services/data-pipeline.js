@@ -24,14 +24,19 @@ export default Service.extend({
   currentReferrer:  null,
 
   poll:         service(),
-  session:      service(),
+
   init() {
     set(this, '_delta', 0);
   },
 
+  browserId: null,
   authorize(fetchOptions) {
     /* Client app should override this method and modify
     fetchOptions for authentication */
+
+
+
+
     return fetchOptions;
   },
 
@@ -94,7 +99,7 @@ export default Service.extend({
   },
 
   _legacySend(path) {
-    let browser_id = get(this, 'session.data.browserId');
+    let browser_id = get(this, 'browserId');
     let fetchOptions = {
       method: 'POST',
       credentials: 'include',
@@ -113,7 +118,7 @@ export default Service.extend({
   _generateData(incoming, action) {
     let data = Object.assign({
       action,
-      browser_id: get(this, 'session.data.browserId'),
+      browser_id: get(this, 'browserId'),
       client: config.clientSlug,
       referrer: get(this, 'currentReferrer'),
       external_referrer: document.referrer,
