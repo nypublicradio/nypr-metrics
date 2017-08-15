@@ -3,6 +3,8 @@ import fetch from 'fetch';
 import service from 'ember-service/inject';
 import config from 'ember-get-config';
 import { next } from 'ember-runloop';
+import get from 'ember-metal/get';
+import set from 'ember-metal/set';
 
 const LISTEN_ACTIONS = {
   START: 'start',
@@ -21,11 +23,16 @@ export default Service.extend({
   listenActionPath: 'v1/events/listened',
   currentReferrer:  null,
 
-  session:      service(),
   poll:         service(),
-
+  session:      service(),
   init() {
-    this.set('_delta', 0);
+    set(this, '_delta', 0);
+  },
+
+  authorize(fetchOptions) {
+    /* Client app should override this method and modify
+    fetchOptions for authentication */
+    return fetchOptions;
   },
 
   reportItemView(incoming = {}) {
@@ -80,14 +87,14 @@ export default Service.extend({
       },
       body: JSON.stringify(data)
     };
-    this.get('session').authorize('authorizer:nypr', (header, value) => {
-      fetchOptions.headers[header] = value;
-    });
+
+    fetchOptions = this.authorize(fetchOptions);
+
     fetch(`${config.platformEventsAPI}/${path}`, fetchOptions);
   },
 
   _legacySend(path) {
-    let browser_id = this.get('session.data.browserId');
+    let browser_id = get(this, 'session.data.browserId');
     let fetchOptions = {
       method: 'POST',
       credentials: 'include',
@@ -97,18 +104,18 @@ export default Service.extend({
       },
       body: JSON.stringify({browser_id})
     };
-    this.get('session').authorize('authorizer:nypr', (header, value) => {
-      fetchOptions.headers[header] = value;
-    });
+
+    fetchOptions = this.authorize(fetchOptions);
+
     fetch(`${config.wnycAPI}/${path}`, fetchOptions);
   },
 
   _generateData(incoming, action) {
     let data = Object.assign({
       action,
-      browser_id: this.get('session.data.browserId'),
+      browser_id: get(this, 'session.data.browserId'),
       client: config.clientSlug,
-      referrer: this.get('currentReferrer'),
+      referrer: get(this, 'currentReferrer'),
       external_referrer: document.referrer,
       url: location.toString(),
       site_id: config.siteId

@@ -10,7 +10,7 @@ moduleFor('service:data-pipeline', 'Unit | Service | data pipeline', {
     const sessionStub = Ember.Service.extend({
       data: {
         browserId: 'secrets'
-      },
+      }
     });
 
     this.register('service:session', sessionStub);
@@ -28,7 +28,7 @@ test('it reports the proper data for an item view', function(assert) {
   let testData = {cms_id: 1, item_type: 'story'};
   let expected = Object.assign({
     browser_id: 'secrets',
-    client: 'wnyc_web',
+    client: config.clientSlug,
     external_referrer: document.referrer,
     referrer: null,
     url: location.toString(),
@@ -36,8 +36,12 @@ test('it reports the proper data for an item view', function(assert) {
   }, testData);
 
   let service = this.subject({
+    authorize(fetchOptions) {
+      fetchOptions['client'] = 'wnyc_web'; // fake authentication from client
+      return fetchOptions;
+    },
     _send(data) {
-      assert.deepEqual(expected, data, 'passes in correct data to send');
+      assert.deepEqual(data, expected, 'passes in correct data to send');
     },
     _legacySend() {}
   });
@@ -50,7 +54,7 @@ test('it reports the proper data for on demand listen actions', function(assert)
   let expected = {
     audio_type: 'on_demand',
     browser_id: 'secrets',
-    client: 'wnyc_web',
+    client: config.clientSlug,
     cms_id: 1,
     current_audio_position: 0,
     delta: 0,
@@ -63,54 +67,57 @@ test('it reports the proper data for on demand listen actions', function(assert)
   let testData = {cms_id: 1, item_type: 'story'};
 
   let service = this.subject({
+    authorize(fetchOptions) {
+      fetchOptions['client'] = 'wnyc_web'; // fake authentication from client
+    },
     _legacySend() {}
   });
 
   service._send = function(data) {
     let thisData = Object.assign({action: 'start'}, expected);
-    assert.deepEqual(thisData, data, 'sendStart passes in correct data');
+    assert.deepEqual(data, thisData, 'sendStart passes in correct data');
   };
   service.reportListenAction('start', Object.assign({audio_type: 'on_demand', current_audio_position: 0}, testData));
 
   service._send = function(data) {
     let thisData = Object.assign({action: 'pause'}, expected);
-    assert.deepEqual(thisData, data, 'sendPause passes in correct data');
+    assert.deepEqual(data, thisData, 'sendPause passes in correct data');
   };
   service.reportListenAction('pause', Object.assign({audio_type: 'on_demand', current_audio_position: 0}, testData));
 
   service._send = function(data) {
     let thisData = Object.assign({action: 'resume'}, expected);
-    assert.deepEqual(thisData, data, 'sendResume passes in correct data');
+    assert.deepEqual( data, thisData, 'sendResume passes in correct data');
   };
   service.reportListenAction('resume', Object.assign({audio_type: 'on_demand', current_audio_position: 0}, testData));
 
   service._send = function(data) {
     let thisData = Object.assign({action: 'skip_15_forward'}, expected);
-    assert.deepEqual(thisData, data, 'sendSkipForward passes in correct data');
+    assert.deepEqual(data, thisData, 'sendSkipForward passes in correct data');
   };
   service.reportListenAction('forward_15', Object.assign({audio_type: 'on_demand', current_audio_position: 0}, testData));
 
   service._send = function(data) {
     let thisData = Object.assign({action: 'skip_15_back'}, expected);
-    assert.deepEqual(thisData, data, 'sendSkipBackward passes in correct data');
+    assert.deepEqual(data, thisData, 'sendSkipBackward passes in correct data');
   };
   service.reportListenAction('back_15', Object.assign({audio_type: 'on_demand', current_audio_position: 0}, testData));
 
   service._send = function(data) {
     let thisData = Object.assign({action: 'window_close'}, expected);
-    assert.deepEqual(thisData, data, 'sendWindowClose passes in correct data');
+    assert.deepEqual(data, thisData, 'sendWindowClose passes in correct data');
   };
   service.reportListenAction('close', Object.assign({audio_type: 'on_demand', current_audio_position: 0}, testData));
 
   service._send = function(data) {
     let thisData = Object.assign({action: 'finish'}, expected);
-    assert.deepEqual(thisData, data, 'sendFinish passes in correct data');
+    assert.deepEqual(data, thisData, 'sendFinish passes in correct data');
   };
   service.reportListenAction('finish', Object.assign({audio_type: 'on_demand', current_audio_position: 0}, testData));
 
   service._send = function(data) {
     let thisData = Object.assign({action: 'set_position'}, expected);
-    assert.deepEqual(thisData, data, 'sendSetPosition passes in correct data');
+    assert.deepEqual(data, thisData, 'sendSetPosition passes in correct data');
   };
   service.reportListenAction('position', Object.assign({audio_type: 'on_demand', current_audio_position: 0}, testData));
 
