@@ -360,9 +360,7 @@ export default Service.extend({
       let analyticsData = Object.assign({
         current_audio_position: position
       }, sound.get('metadata.analytics'));
-
       let queue = get(this, 'listenActionQueue')
-
       queue.push({sound, type, analyticsData});
       debounce(this, '_flushListenActions', 100);
     }
@@ -415,15 +413,15 @@ export default Service.extend({
     if (withRegion || withAnalytics) {
       label = `${region}${analyticsCode}`;
     }
-    
+
     let queue = get(this, 'googleQueue');
     queue.push({category, action, label});
     debounce(this, '_flushGoogle', 100);
   },
-  
+
   _flushGoogle() {
     let queue = get(this, 'googleQueue');
-    
+
     if (queue.length === 0) {
       return;
     }

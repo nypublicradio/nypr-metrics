@@ -302,7 +302,7 @@ test("service passes correct attrs to data pipeline to report an on_demand liste
 
     hifi.play("/good/10000/test2.mp3", { metadata: metadata2 }).then(() => {
       hifi.set("position", hifi.get("position") + 10000);
-      wait(1000).then(() => {
+      return wait().then(() => {
         let reportCalls = reportStub.getCalls();
         let expectedCalls = [
           [
