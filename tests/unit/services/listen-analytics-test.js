@@ -117,6 +117,7 @@ test("it calls _onDemandInterrupted when audio is interrupted", function(
   let interruptSpy = sinon.stub(interceptor, "_onDemandInterrupted");
   let service = this.subject(interceptor);
   let hifi = service.get("hifi");
+  let done = assert.async();
 
   let metadata1 = {
     contentModelType: "story",
@@ -138,6 +139,7 @@ test("it calls _onDemandInterrupted when audio is interrupted", function(
           1,
           "on demand interrupted should have been called"
         );
+        done();
       });
     });
   });
