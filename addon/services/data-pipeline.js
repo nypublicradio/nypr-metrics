@@ -33,10 +33,6 @@ export default Service.extend({
   authorize(fetchOptions) {
     /* Client app should override this method and modify
     fetchOptions for authentication */
-
-
-
-
     return fetchOptions;
   },
 
