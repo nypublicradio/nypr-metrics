@@ -1,0 +1,22 @@
+machine:
+  node:
+    version: 7.10.0
+  post:
+    - npm rebuild node-sass
+dependencies:
+  override:
+    - yarn global add bower
+    - bower install
+    - yarn --pure-lockfile
+
+test:
+  override:
+    - yarn test:
+        timeout: 1200
+
+deployment:
+  docs:
+    branch: master
+    commands:
+      - git checkout gh-pages; git checkout master
+      - ./node_modules/ember-cli/bin/ember deploy production
