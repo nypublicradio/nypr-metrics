@@ -129,15 +129,9 @@ export default Service.extend({
     let action      = get(sound, 'hasPlayed') ? 'resume' : 'start';
     let story       = get(sound, 'metadata.contentModel');
     let playContext = getWithDefault(sound, 'metadata.playContext', "");
+    let fromClick   = get(sound, 'metadata.fromClick');
 
     this._sendListenAction(sound, action);
-    this._trackPlayerEvent({
-      action: `Played Story "${get(story, 'title')}"`,
-      withRegion: true,
-      region: upperCamelize(playContext),
-      withAnalytics: true,
-      story
-    });
     this._trackPlayerEventForNpr({
       category: 'Engagement',
       action: 'On_demand_audio_play',
@@ -149,6 +143,16 @@ export default Service.extend({
       this._trackPlayerEvent({
         action: 'Played Story from Queue',
         label: get(story, 'title'),
+        story
+      });
+    }
+    
+    if (!fromClick) {
+      this._trackPlayerEvent({
+        action: `Played Story "${get(story, 'title')}"`,
+        withRegion: true,
+        region: upperCamelize(playContext),
+        withAnalytics: true,
         story
       });
     }
