@@ -156,14 +156,6 @@ export default Service.extend({
 
   _onDemandPause(sound) {
     let story       = get(sound, 'metadata.contentModel');
-    let playContext = get(sound, 'metadata.playContext');
-
-    this._trackPlayerEvent({
-      story: story,
-      action: 'Pause',
-      withRegion: true,
-      region: this._formatContext(playContext),
-    });
 
     this._trackPlayerEventForNpr({
       category: 'Engagement',
@@ -227,14 +219,6 @@ export default Service.extend({
 
   _onStreamPause(sound) {
     let stream      = get(sound, 'metadata.contentModel');
-    let playContext = get(sound, 'metadata.playContext');
-
-    this._trackPlayerEvent({
-      story: stream,
-      action: 'Pause',
-      withRegion: true,
-      region: this._formatContext(playContext),
-    });
 
     this._trackPlayerEventForNpr({
       category: 'Engagement',
