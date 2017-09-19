@@ -108,7 +108,7 @@ export default Service.extend({
 
     fetchOptions = this.authorize(fetchOptions);
 
-    fetch(`${config.wnycAPI}/${path}`, fetchOptions);
+    fetch(`${config.publisherAPI}/${path}`, fetchOptions);
   },
 
   _generateData(incoming, action) {
