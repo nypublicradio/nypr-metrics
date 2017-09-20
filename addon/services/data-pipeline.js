@@ -42,7 +42,7 @@ export default Service.extend({
       this._send(data, this.itemViewPath);
 
       if (data.cms_id) {
-        this._legacySend(`api/most/view/managed_item/${data.cms_id}/`);
+        this._legacySend(`most/view/managed_item/${data.cms_id}/`);
       }
     });
   },
@@ -53,10 +53,10 @@ export default Service.extend({
     this._send(data, this.listenActionPath);
 
     if (/start|resume/.test(data.action) && data.cms_id) {
-      this._legacySend(`api/most/listen/managed_item/${data.cms_id}/`);
-      this._legacySend(`api/v1/listenaction/create/${data.cms_id}/play/`);
+      this._legacySend(`most/listen/managed_item/${data.cms_id}/`);
+      this._legacySend(`v1/listenaction/create/${data.cms_id}/play/`);
     } else if (data.action === 'finish' && data.cms_id) {
-      this._legacySend(`api/v1/listenaction/create/${data.cms_id}/complete/`);
+      this._legacySend(`v1/listenaction/create/${data.cms_id}/complete/`);
     }
   },
 
@@ -108,7 +108,7 @@ export default Service.extend({
 
     fetchOptions = this.authorize(fetchOptions);
 
-    fetch(`${config.wnycAPI}/${path}`, fetchOptions);
+    fetch(`${config.publisherAPI}/${path}`, fetchOptions);
   },
 
   _generateData(incoming, action) {
