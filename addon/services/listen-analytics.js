@@ -139,14 +139,14 @@ export default Service.extend({
       story
     });
 
-    if (playContext === 'queue' || playContext === 'history') {
+    if (action === 'start' && (playContext === 'queue' || playContext === 'history')) {
       this._trackPlayerEvent({
         action: 'Played Story from Queue',
         label: get(story, 'title'),
         story
       });
     }
-    
+
     if (!fromClick) {
       this._trackPlayerEvent({
         action: `Played Story "${get(story, 'title')}"`,
