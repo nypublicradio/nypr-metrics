@@ -180,6 +180,7 @@ export default Service.extend({
   },
 
   _onStreamPlay(sound) {
+    let action      = get(sound, 'hasPlayed') ? 'resume' : 'start';
     let stream      = get(sound, 'metadata.contentModel');
     let playContext = get(sound, 'metadata.playContext');
     let streamName  = get(stream, 'name');
@@ -189,10 +190,12 @@ export default Service.extend({
       label += `|${this._formatContext(playContext)}`;
     }
 
-    this._trackPlayerEvent({
-      action: 'Launched Stream',
-      label,
-    });
+    if (action === 'start') {
+      this._trackPlayerEvent({
+        action: 'Launched Stream',
+        label,
+      });
+    }
 
     this._sendListenAction(sound, 'start');
 
