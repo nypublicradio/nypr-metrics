@@ -212,16 +212,18 @@ export default Service.extend({
     let prevStreamName = get(previousStream, 'name');
     let currentStreamName = get(currentStream, 'name');
 
-    this._trackPlayerEvent({
-      action: 'Switched Stream to Stream',
-      label: `from ${prevStreamName} to ${currentStreamName}`
-    });
+    if (prevStreamName !== currentStreamName) {
+      this._trackPlayerEvent({
+        action: 'Switched Stream to Stream',
+        label: `from ${prevStreamName} to ${currentStreamName}`
+      });
 
-    this._trackPlayerEventForNpr({
-      category: 'Engagement',
-      action: 'Stream_Change',
-      label: `Streaming_${currentStreamName}`
-    });
+      this._trackPlayerEventForNpr({
+        category: 'Engagement',
+        action: 'Stream_Change',
+        label: `Streaming_${currentStreamName}`
+      });
+    }
   },
 
   _onStreamPause(sound) {
