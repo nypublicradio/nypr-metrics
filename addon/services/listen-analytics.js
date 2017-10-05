@@ -140,9 +140,12 @@ export default Service.extend({
     });
 
     if (action === 'start' && (playContext === 'queue' || playContext === 'history')) {
+      let showTitle = get(story, 'showTitle') || get(story, 'headers.brand.title');
+      let storyTitle = get(story, 'title');
+
       this._trackPlayerEvent({
         action: 'Played Story from Queue',
-        label: get(story, 'title'),
+        label: `${showTitle}|${storyTitle}`,
         story
       });
     }
