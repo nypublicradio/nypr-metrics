@@ -198,6 +198,11 @@ export default Service.extend({
         action: 'Launched Stream',
         label,
       });
+    } else if (action === 'resume') {
+      this._trackPlayerEvent({
+        action: 'Resumed Stream',
+        label,
+      });
     }
 
     this._sendListenAction(sound, 'start');
@@ -231,6 +236,11 @@ export default Service.extend({
 
   _onStreamPause(sound) {
     let stream      = get(sound, 'metadata.contentModel');
+
+    this._trackPlayerEvent({
+      action: 'Paused Stream',
+      label: get(stream, 'name')
+    });
 
     this._trackPlayerEventForNpr({
       category: 'Engagement',
