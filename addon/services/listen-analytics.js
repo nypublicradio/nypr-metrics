@@ -97,18 +97,21 @@ export default Service.extend({
   },
 
   _onAudioEnded(sound) {
+    let type = get(sound, 'metadata.contentModelType');
     let story = get(sound, 'metadata.contentModel');
     let playContext = getWithDefault(sound, 'metadata.playContext', "");
 
-    this._trackPlayerEvent({
-      story,
-      action: 'Finished Story',
-      withRegion: true,
-      withAnalytics: true,
-      region: upperCamelize(playContext)
-    });
+    if (type !== 'bumper') {
+      this._trackPlayerEvent({
+        story,
+        action: 'Finished Story',
+        withRegion: true,
+        withAnalytics: true,
+        region: upperCamelize(playContext)
+      });
 
-    this._sendListenAction(sound, 'finish');
+      this._sendListenAction(sound, 'finish');
+    }
   },
 
   _onAudioPaused(sound) {
