@@ -139,14 +139,17 @@ export default Service.extend({
       story
     });
 
-    if (playContext === 'queue' || playContext === 'history') {
+    if (action === 'start' && (playContext === 'queue' || playContext === 'history')) {
+      let showTitle = get(story, 'showTitle') || get(story, 'headers.brand.title');
+      let storyTitle = get(story, 'title');
+
       this._trackPlayerEvent({
         action: 'Played Story from Queue',
-        label: get(story, 'title'),
+        label: `${showTitle}|${storyTitle}`,
         story
       });
     }
-    
+
     if (!fromClick) {
       this._trackPlayerEvent({
         action: `Played Story "${get(story, 'title')}"`,
@@ -180,6 +183,7 @@ export default Service.extend({
   },
 
   _onStreamPlay(sound) {
+    let action      = get(sound, 'hasPlayed') ? 'resume' : 'start';
     let stream      = get(sound, 'metadata.contentModel');
     let playContext = get(sound, 'metadata.playContext');
     let streamName  = get(stream, 'name');
@@ -189,10 +193,12 @@ export default Service.extend({
       label += `|${this._formatContext(playContext)}`;
     }
 
-    this._trackPlayerEvent({
-      action: 'Launched Stream',
-      label,
-    });
+    if (action === 'start') {
+      this._trackPlayerEvent({
+        action: 'Launched Stream',
+        label,
+      });
+    }
 
     this._sendListenAction(sound, 'start');
 
@@ -209,16 +215,18 @@ export default Service.extend({
     let prevStreamName = get(previousStream, 'name');
     let currentStreamName = get(currentStream, 'name');
 
-    this._trackPlayerEvent({
-      action: 'Switched Stream to Stream',
-      label: `from ${prevStreamName} to ${currentStreamName}`
-    });
+    if (prevStreamName !== currentStreamName) {
+      this._trackPlayerEvent({
+        action: 'Switched Stream to Stream',
+        label: `from ${prevStreamName} to ${currentStreamName}`
+      });
 
-    this._trackPlayerEventForNpr({
-      category: 'Engagement',
-      action: 'Stream_Change',
-      label: `Streaming_${currentStreamName}`
-    });
+      this._trackPlayerEventForNpr({
+        category: 'Engagement',
+        action: 'Stream_Change',
+        label: `Streaming_${currentStreamName}`
+      });
+    }
   },
 
   _onStreamPause(sound) {
