@@ -186,9 +186,10 @@ export default Service.extend({
   },
 
   _onStreamPlay(sound) {
-    let action      = get(sound, 'hasPlayed') ? 'resume' : 'start';
+    let previousId   = get(this, 'currentSound.metadata.contentId');
     let stream      = get(sound, 'metadata.contentModel');
     let playContext = get(sound, 'metadata.playContext');
+    let streamId    = get(stream, 'id');
     let streamName  = get(stream, 'name');
 
     let label = streamName;
@@ -196,7 +197,7 @@ export default Service.extend({
       label += `|${this._formatContext(playContext)}`;
     }
 
-    if (action === 'start') {
+    if (streamId !== previousId) {
       this._trackPlayerEvent({
         action: 'Launched Stream',
         label,
