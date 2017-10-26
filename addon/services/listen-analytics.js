@@ -271,11 +271,12 @@ export default Service.extend({
   },
 
   _onPlayerPing() {
-    get(this, 'metrics').trackEvent('GoogleAnalytics', {
-      category: 'Persistent Player',
-      action: '2 Minute Ping',
-      value: get(this, 'hifi.isPlaying') ? 1 : 0
-    });
+    if (get(this, 'hifi.isPlaying')) {
+      get(this, 'metrics').trackEvent('GoogleAnalytics', {
+          category: 'Persistent Player',
+          action: '2 Minute Ping',
+        });
+    }
   },
 
   _onAudioPositionWillChange(sound) {
