@@ -46,3 +46,7 @@ export default DataPipeline.extend({
 ## instance-initialzers/eager-load-services
 
 This instance initializer is an affordance for upstream apps so the the `listen-analytics` service can attach event listeners as soon as possible.
+
+## Publishing
+
+This addon is published to npm using semver. See the [wiki](https://wiki2.wnyc.org/index.php?title=WebClient:Developer_Guide) for more instructions.
