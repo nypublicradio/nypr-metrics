@@ -1,7 +1,7 @@
 {
   "name": "nypr-metrics",
   "version": "0.0.1",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "Analytics and tracking services for NYPR ember apps",
   "keywords": [
     "ember-addon"
   ],
