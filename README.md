@@ -1,5 +1,38 @@
 # nypr-metrics
 
+## service/data-layer
+The `data-layer` service provides a higher-level API to the `dataLayer` provided by Google Tag Manager. The API surface is tailored specifically for NYPR use-cases and can be easily extended as new requirements arise.
+
+**NOTE**
+This service is injected under the `nypr-metrics` namespace in order to maintain a clear distinction between the global `window.dataLayer` and this particular service. So, you'd inject it like this:
+```js
+dataLayer: service('nypr-metrics/data-layer')
+```
+
+### Methods
+`setForType(type, instance)`
+
+Set particular `dataLayer` variables based on the given `type`.
+
+**Parameters**
+
+Name | Type | Description
+--- | --- | ---
+`type` | String | The type of `instance` from which to pull values for the `dataLayer`. Determines specific logic and key names get pushed into the `dataLayer`.
+`instance` | Object/Model | The thing going into the `dataLayer`.
+
+
+`clearForType(type)`
+
+Clears the `dataLayer` values for the given `type`.
+
+**Parameters**
+
+Name | Type | Description
+--- | --- | ---
+`type` | String | Each type sets different values; this ensures only a given types variables are cleared.
+
+
 ## service/listen-analytics
 The `listen-analytics` service coordinates analytics tracking related to listening activities.  It listens to events fired by `ember-hifi` and makes calls to methods on the `data-pipeline` service and available `ember-metrics` adapters. It reads state directly off of `ember-hifi.`
 
