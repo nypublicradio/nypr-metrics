@@ -436,105 +436,103 @@ test("service passes correct attrs to data pipeline to report an on_demand liste
       });
     });
   });
+});
 
-
-  test("service does not record the pause action immediately preceding an end action", function(
+test("service does not record the pause action immediately preceding an end action", function(
     assert
   ) {
 
-    let done = assert.async();
-    let reportStub = sinon.stub();
-    let interceptor = {
-      dataPipeline: {
-        reportListenAction: reportStub
-      }
-    };
+  let done = assert.async();
+  let reportStub = sinon.stub();
+  let interceptor = {
+    dataPipeline: {
+      reportListenAction: reportStub
+    }
+  };
 
-    let service = this.subject(interceptor);
-    let hifi = service.get("hifi");
+  let service = this.subject(interceptor);
+  let hifi = service.get("hifi");
 
-    let metadata1 = {
-      contentModelType: "story",
-      contentId: 1,
-      contentModel: {
+  let metadata1 = {
+    contentModelType: "story",
+    contentId: 1,
+    contentModel: {
 
-      },
-      analytics: {
-        audio_type: "on_demand",
-        cms_id: 1,
-        item_type: "episode"
-      }
-    };
+    },
+    analytics: {
+      audio_type: "on_demand",
+      cms_id: 1,
+      item_type: "episode"
+    }
+  };
 
-    let metadata2 = {
-      contentModelType: "story",
-      contentId: 2,
-      contentModel: {
+  let metadata2 = {
+    contentModelType: "story",
+    contentId: 2,
+    contentModel: {
 
-      },
-      analytics: {
-        audio_type: "on_demand",
-        cms_id: 2,
-        item_type: "episode"
-      }
-    };
+    },
+    analytics: {
+      audio_type: "on_demand",
+      cms_id: 2,
+      item_type: "episode"
+    }
+  };
 
-    let sound1, sound2;
+  let sound1, sound2;
 
-    hifi.load("/good/1000/test.mp3", {metadata: metadata1}).then(({sound}) => {
-      sound1= sound;
-      hifi.load("/good/1000/test2.mp3", {metadata: metadata2}).then(({sound}) => {
-        sound2 = sound;
+  hifi.load("/good/1000/test.mp3", {metadata: metadata1}).then(({sound}) => {
+    sound1= sound;
+    hifi.load("/good/1000/test2.mp3", {metadata: metadata2}).then(({sound}) => {
+      sound2 = sound;
 
-        service._sendListenAction(sound1, 'start');
-        service._sendListenAction(sound1, 'pause');
-        service._sendListenAction(sound2, 'pause');
-        service._sendListenAction(sound1, 'finish');
+      service._sendListenAction(sound1, 'start');
+      service._sendListenAction(sound1, 'pause');
+      service._sendListenAction(sound2, 'pause');
+      service._sendListenAction(sound1, 'finish');
 
-        wait(1000).then(() => {
-          let reportCalls = reportStub.getCalls();
+      wait(1000).then(() => {
+        let reportCalls = reportStub.getCalls();
 
-          let expectedCalls = [
-            [
-              "start",
-              {
-                audio_type: "on_demand",
-                cms_id: 1,
-                item_type: "episode",
-                current_audio_position: 0
-              }
-            ],
-            [
-              "pause",
-              {
-                audio_type: "on_demand",
-                cms_id: 2,
-                item_type: "episode",
-                current_audio_position: 0
-              }
-            ],
-            [
-              "finish",
-              {
-                audio_type: "on_demand",
-                cms_id: 1,
-                item_type: "episode",
-                current_audio_position: 0
-              }
-            ]
-          ];
+        let expectedCalls = [
+          [
+            "start",
+            {
+              audio_type: "on_demand",
+              cms_id: 1,
+              item_type: "episode",
+              current_audio_position: 0
+            }
+          ],
+          [
+            "pause",
+            {
+              audio_type: "on_demand",
+              cms_id: 2,
+              item_type: "episode",
+              current_audio_position: 0
+            }
+          ],
+          [
+            "finish",
+            {
+              audio_type: "on_demand",
+              cms_id: 1,
+              item_type: "episode",
+              current_audio_position: 0
+            }
+          ]
+        ];
 
-          assert.deepEqual(reportCalls.map(r => r.args[0]), expectedCalls.map(e => e[0]), `should have the specified calls`);
+        assert.deepEqual(reportCalls.map(r => r.args[0]), expectedCalls.map(e => e[0]), `should have the specified calls`);
 
-          reportCalls.forEach((reportCall, index) => {
-            assert.deepEqual(reportCall.args, expectedCalls[index], `${expectedCalls[index][0]} should have the correct arguments`
-            );
-          });
-
-          done();
+        reportCalls.forEach((reportCall, index) => {
+          assert.deepEqual(reportCall.args, expectedCalls[index], `${expectedCalls[index][0]} should have the correct arguments`
+          );
         });
+
+        done();
       });
     });
-
-  })
+  });
 });
