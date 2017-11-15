@@ -67,3 +67,42 @@ test('it clears the expected dataLayer values for a show', function() {
   let service = this.subject();
   service.clearForType('show');
 });
+
+test('it sets the expected dataLayer value for logged in states', function(assert) {
+  let spy = this.spy(window.dataLayer, 'push');
+  
+  let service = this.subject();
+  service.setLoggedIn(true);
+  service.setLoggedIn(false);
+  
+  assert.ok(spy.firstCall.calledWith({ 'Logged In': true }));
+  assert.ok(spy.secondCall.calledWith({ 'Logged In': false }));
+  
+  service.setLoggedIn('something else');
+  assert.equal(spy.callCount, 2, 'invalid arguments are not pushed into the dataLayer');
+});
+
+test('it sets the exepcted dataLayer value for member status', function(assert) {
+  let spy = this.spy(window.dataLayer, 'push');
+  
+  let service = this.subject();
+  service.setMemberStatus('Nonmember');
+  service.setMemberStatus('One-Time Donor');
+  service.setMemberStatus('Sustainer');
+  
+  assert.ok(spy.firstCall.calledWith({ 'Member Status': 'Nonmember' }));
+  assert.ok(spy.secondCall.calledWith({ 'Member Status': 'One-Time Donor' }));
+  assert.ok(spy.thirdCall.calledWith({ 'Member Status': 'Sustainer' }));
+  
+  service.setMemberStatus('something else');
+  assert.equal(spy.callCount, 3, 'invalid arguments are not pushed into the dataLayer');
+});
+
+test('it sets the exepcted dataLayer value for page title', function(assert) {
+  let spy = this.spy(window.dataLayer, 'push');
+  
+  let service = this.subject();
+  service.setPageTitle('Foo Title');
+  
+  assert.ok(spy.firstCall.calledWith({ 'Page Title': 'Foo Title' }));
+});

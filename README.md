@@ -32,6 +32,35 @@ Name | Type | Description
 --- | --- | ---
 `type` | String | Each type sets different values; this ensures only a given types variables are cleared.
 
+`setLoggedIn(state)`
+
+Set the `dataLayer` variable to indicate the user's logged-in status.
+
+**Parameters**
+
+Name | Type | Description
+--- | --- | ---
+`state` | Boolean | `true` for logged in, `false` if not
+
+`setMemberStatus(state)`
+
+Set the `dataLayer` variable to indicate the user's membership status.
+
+**Parameters**
+
+Name | Type | Description
+--- | --- | ---
+`state` | String | `Nonmember`, `One-Time Donor`, `Sustainer`
+
+`setPageTitle(title)`
+
+Set the `dataLayer` variable for the current page title.
+
+**Parameters**
+
+Name | Type | Description
+--- | --- | ---
+`title` | String | The page title.
 
 ## service/listen-analytics
 The `listen-analytics` service coordinates analytics tracking related to listening activities.  It listens to events fired by `ember-hifi` and makes calls to methods on the `data-pipeline` service and available `ember-metrics` adapters. It reads state directly off of `ember-hifi.`

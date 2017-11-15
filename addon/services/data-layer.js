@@ -36,6 +36,32 @@ export default Service.extend({
     }
   },
   
+  setLoggedIn(state) {
+    let dataLayer = this.getDataLayer();
+    if (![true, false].includes(state)) {
+      return;
+    }
+    dataLayer.push({
+      'Logged In': state
+    });
+  },
+  
+  setMemberStatus(status) {
+    let dataLayer = this.getDataLayer();
+    if (!['Nonmember', 'One-Time Donor', 'Sustainer'].includes(status)) {
+      return;
+    }
+    
+    dataLayer.push({
+      'Member Status': status
+    });
+  },
+  
+  setPageTitle(title) {
+    let dataLayer = this.getDataLayer();
+    dataLayer.push({ 'Page Title': title });
+  },
+  
   getDataLayer() {
     if (!window.dataLayer) {
       console.warn('No global dataLayer available'); // eslint-disable-line
