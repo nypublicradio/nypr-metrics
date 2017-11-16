@@ -6,7 +6,7 @@ import { dummyHifi } from "dummy/tests/helpers/hifi-integration-helpers";
 import wait from "ember-test-helpers/wait";
 
 moduleFor("service:listen-analytics", "Unit | Service | listen analytics", {
-  needs: [...hifiNeeds],
+  needs: [...hifiNeeds, 'service:metrics', 'service:nypr-metrics/data-layer'],
   beforeEach() {
     this.register("service:hifi", dummyHifi);
     this.inject.service("hifi");
@@ -15,15 +15,8 @@ moduleFor("service:listen-analytics", "Unit | Service | listen analytics", {
       reportListenAction: function() {}
     });
 
-    let metrics = Ember.Service.extend({
-      trackEvent: function() {}
-    });
-
     this.register("service:data-pipeline", pipeline);
     this.inject.service("dataPipeline");
-
-    this.register("service:metrics", metrics);
-    this.inject.service("metrics");
   }
 });
 
