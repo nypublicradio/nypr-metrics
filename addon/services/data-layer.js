@@ -37,21 +37,21 @@ export default Service.extend({
   },
   
   setLoggedIn(state) {
-    let dataLayer = this.getDataLayer();
     if (![true, false].includes(state)) {
       return;
     }
+    let dataLayer = this.getDataLayer();
     dataLayer.push({
       'Logged In': state
     });
   },
   
   setMemberStatus(status) {
-    let dataLayer = this.getDataLayer();
     if (!['Nonmember', 'One-Time Donor', 'Sustainer'].includes(status)) {
       return;
     }
     
+    let dataLayer = this.getDataLayer();
     dataLayer.push({
       'Member Status': status
     });
