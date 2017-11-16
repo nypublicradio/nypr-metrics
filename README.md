@@ -10,7 +10,7 @@ dataLayer: service('nypr-metrics/data-layer')
 ```
 
 ### Methods
-`setForType(type, instance)`
+#### `setForType(type, instance)`
 
 Set particular `dataLayer` variables based on the given `type`.
 
@@ -22,7 +22,7 @@ Name | Type | Description
 `instance` | Object/Model | The thing going into the `dataLayer`.
 
 
-`clearForType(type)`
+#### `clearForType(type)`
 
 Clears the `dataLayer` values for the given `type`.
 
@@ -32,7 +32,7 @@ Name | Type | Description
 --- | --- | ---
 `type` | String | Each type sets different values; this ensures only a given types variables are cleared.
 
-`setLoggedIn(state)`
+#### `setLoggedIn(state)`
 
 Set the `dataLayer` variable to indicate the user's logged-in status.
 
@@ -42,7 +42,7 @@ Name | Type | Description
 --- | --- | ---
 `state` | Boolean | `true` for logged in, `false` if not
 
-`setMemberStatus(state)`
+#### `setMemberStatus(state)`
 
 Set the `dataLayer` variable to indicate the user's membership status.
 
@@ -52,7 +52,7 @@ Name | Type | Description
 --- | --- | ---
 `state` | String | `Nonmember`, `One-Time Donor`, `Sustainer`
 
-`setPageTitle(title)`
+#### `setPageTitle(title)`
 
 Set the `dataLayer` variable for the current page title.
 
