@@ -62,6 +62,16 @@ export default Service.extend({
     dataLayer.push({ 'Page Title': title });
   },
   
+  audioTracking(type, soundObject) {
+    if (!['play', 'pause', 'resume', 'end'].includes(type)) {
+      return;
+    }
+    let dataLayer = this.getDataLayer();
+    let event = this._audioEventForType(soundObject);
+    event['Playback State'] = type;
+    dataLayer.push(event);
+  },
+  
   getDataLayer() {
     if (!window.dataLayer) {
       console.warn('No global dataLayer available'); // eslint-disable-line
@@ -86,5 +96,21 @@ export default Service.extend({
     return {
       'Show Name': get(show, 'title')
     };
+  },
+  
+  _audioEventForType(soundObject) {
+    let { contentModelType:type, contentModel:model } = get(soundObject, 'metadata');
+    switch(type) {
+      case 'story': // on demand
+        return {
+          event: 'On Demand Audio Playback',
+          'Audio Story Title': get(model, 'title'),
+          'Audio Show Title': get(model, 'showTitle')
+        };
+      case 'stream':
+        return {
+          event: 'Livestream Audio Playback'
+        };
+    }
   }
 });

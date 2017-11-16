@@ -106,3 +106,66 @@ test('it sets the exepcted dataLayer value for page title', function(assert) {
   
   assert.ok(spy.firstCall.calledWith({ 'Page Title': 'Foo Title' }));
 });
+
+test('it pushes the expected values into the dataLayer for audio events', function(assert) {
+  const onDemandSound = {
+    metadata: {
+      contentModelType: 'story',
+      contentModel: {
+        showTitle: 'Foo Show',
+        title: 'Foo Title'
+      }
+    }
+  };
+  
+  const streamSound = {
+    metadata: {
+      contentModelType: 'stream',
+      contentModel: {}
+    }
+  };
+  
+  let spy = this.spy(window.dataLayer, 'push');
+  
+  let service = this.subject();
+  service.audioTracking('play', onDemandSound);
+  service.audioTracking('play', streamSound);
+  
+  service.audioTracking('pause', onDemandSound);
+  service.audioTracking('pause', streamSound);
+  
+  service.audioTracking('end', onDemandSound);
+  
+  let calls = spy.getCalls();
+  
+  assert.ok(calls[0].calledWith({
+    event: 'On Demand Audio Playback',
+    'Playback State': 'play',
+    'Audio Story Title': onDemandSound.metadata.contentModel.title,
+    'Audio Show Title': onDemandSound.metadata.contentModel.showTitle
+  }));
+  
+  assert.ok(calls[1].calledWith({
+    event: 'Livestream Audio Playback',
+    'Playback State': 'play'
+  }));
+  
+  assert.ok(calls[2].calledWith({
+    event: 'On Demand Audio Playback',
+    'Playback State': 'pause',
+    'Audio Story Title': onDemandSound.metadata.contentModel.title,
+    'Audio Show Title': onDemandSound.metadata.contentModel.showTitle
+  }));
+  
+  assert.ok(calls[3].calledWith({
+    event: 'Livestream Audio Playback',
+    'Playback State': 'pause'
+  }));
+  
+  assert.ok(calls[4].calledWith({
+    event: 'On Demand Audio Playback',
+    'Playback State': 'end',
+    'Audio Story Title': onDemandSound.metadata.contentModel.title,
+    'Audio Show Title': onDemandSound.metadata.contentModel.showTitle
+  }));
+});
