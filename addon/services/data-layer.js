@@ -76,7 +76,7 @@ export default Service.extend({
     
     values['Authors'] = get(story, 'appearances.authors').map(a => a.name).join(', ');
     values['Date Published'] = get(story, 'newsdate');
-    values['Show Name'] = get(story, 'showTitle');
+    values['Show Name'] = get(story, 'showTitle') || get(story, 'channelTitle');
     values['Story Title'] = get(story, 'title')
     
     return values;
