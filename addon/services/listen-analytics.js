@@ -14,6 +14,7 @@ export default Service.extend({
   hifi        : service(),
   dataPipeline: service(),
   metrics     : service(),
+  dataLayer   : service('nypr-metrics/data-layer'),
   poll        : service(),
   currentSound: computed.reads('hifi.currentSound'),
   sessionPing : TWO_MINUTES,
@@ -98,18 +99,9 @@ export default Service.extend({
 
   _onAudioEnded(sound) {
     let type = get(sound, 'metadata.contentModelType');
-    let story = get(sound, 'metadata.contentModel');
-    let playContext = getWithDefault(sound, 'metadata.playContext', "");
 
     if (type !== 'bumper') {
-      this._trackPlayerEvent({
-        story,
-        action: 'Finished Story',
-        withRegion: true,
-        withAnalytics: true,
-        region: upperCamelize(playContext)
-      });
-
+      get(this, 'dataLayer').audioTracking('end', sound);
       this._sendListenAction(sound, 'finish');
     }
   },
@@ -132,7 +124,6 @@ export default Service.extend({
     let action      = get(sound, 'hasPlayed') ? 'resume' : 'start';
     let story       = get(sound, 'metadata.contentModel');
     let playContext = getWithDefault(sound, 'metadata.playContext', "");
-    let fromClick   = get(sound, 'metadata.fromClick');
 
     this._sendListenAction(sound, action);
     this._trackPlayerEventForNpr({
@@ -153,15 +144,7 @@ export default Service.extend({
       });
     }
 
-    if (!fromClick) {
-      this._trackPlayerEvent({
-        action: `Played Story "${get(story, 'title')}"`,
-        withRegion: true,
-        region: upperCamelize(playContext),
-        withAnalytics: true,
-        story
-      });
-    }
+    get(this, 'dataLayer').audioTracking(get(sound, 'hasPlayed') ? 'resume' : 'play', sound);
   },
 
   _onDemandPause(sound) {
@@ -175,6 +158,7 @@ export default Service.extend({
     });
 
     this._sendListenAction(sound, 'pause');
+    get(this, 'dataLayer').audioTracking('pause', sound);
   },
 
   _onDemandInterrupted(sound) {
@@ -188,20 +172,11 @@ export default Service.extend({
   _onStreamPlay(sound) {
     let previousId   = get(this, 'currentSound.metadata.contentId');
     let stream      = get(sound, 'metadata.contentModel');
-    let playContext = get(sound, 'metadata.playContext');
     let streamId    = get(stream, 'id');
     let streamName  = get(stream, 'name');
 
-    let label = streamName;
-    if (playContext === 'nav' || playContext === 'Continuous Play') {
-      label += `|${this._formatContext(playContext)}`;
-    }
-
     if (streamId !== previousId) {
-      this._trackPlayerEvent({
-        action: 'Launched Stream',
-        label,
-      });
+      get(this, 'dataLayer').audioTracking('play', sound);
     }
 
     this._sendListenAction(sound, 'start');
@@ -243,6 +218,7 @@ export default Service.extend({
     });
 
     this._sendListenAction(sound, 'pause');
+    get(this, 'dataLayer').audioTracking('pause', sound);
   },
 
   _onBumperPause(sound) {
