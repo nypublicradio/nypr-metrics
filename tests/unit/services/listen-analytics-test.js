@@ -148,6 +148,7 @@ test("it calls _onDemandInterrupted when audio is interrupted", function(
 test("it does not call _onDemandInterrupted when audio is paused beforehand", function(
   assert
 ) {
+  let done = assert.async();
   let interceptor = {
     _onDemandInterrupted: function() {}
   };
@@ -176,6 +177,7 @@ test("it does not call _onDemandInterrupted when audio is paused beforehand", fu
         0,
         "on demand interrupted should not have been called"
       );
+      done();
     });
   });
 });
