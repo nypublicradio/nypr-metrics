@@ -531,3 +531,59 @@ test("service does not record the pause action immediately preceding an end acti
     });
   });
 });
+
+test("it calls dataLayer.trackAudio with the correct params", function(assert) {
+  let EventedObject = Ember.Object.extend(Ember.Evented);
+  const onDemand = EventedObject.create({
+    metadata: {
+      contentModelType: 'story',
+      contentModel: {
+        showTitle: 'Foo Show',
+        title: 'Foo Title'
+      }
+    }
+  });
+  
+  const stream = EventedObject.create({
+    metadata: {
+      contentModelType: 'stream',
+      contentModel: {
+        id: 1
+      }
+    }
+  });
+  
+  let spy = sinon.spy();
+  let service = this.subject({
+    dataLayer: {
+      audioTracking: spy
+    }
+  });
+  let hifi = service.get("hifi");
+  
+  Ember.run(() => {
+    hifi.trigger('audio-played', onDemand);
+    hifi.trigger('audio-played', stream);
+    
+    hifi.trigger('audio-paused', onDemand);
+    hifi.trigger('audio-paused', stream);
+    
+    hifi.trigger('audio-ended', onDemand);
+    
+    onDemand.set('hasPlayed', true);
+    hifi.trigger('audio-played', onDemand);
+    onDemand.set('hasPlayed', false);
+  })
+  
+  let calls = spy.getCalls();
+  assert.ok(calls[0].calledWith('play', onDemand), 'on demand play');
+  assert.ok(calls[1].calledWith('play', stream), 'stream play');
+  
+  assert.ok(calls[2].calledWith('pause', onDemand), 'on demand pause');
+  assert.ok(calls[3].calledWith('pause', stream), 'stream pause');
+  
+  assert.ok(calls[4].calledWith('end', onDemand), 'on demand end');
+  
+  onDemand.set('hasPlayed', true);
+  assert.ok(calls[5].calledWith('resume', onDemand), 'on demand resume');
+});
