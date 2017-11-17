@@ -1,12 +1,8 @@
 machine:
   node:
     version: 8
-  post:
-    - npm rebuild node-sass
 dependencies:
   override:
-    - yarn global add bower
-    - bower install
     - yarn --pure-lockfile
 
 test:
