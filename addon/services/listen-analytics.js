@@ -177,6 +177,8 @@ export default Service.extend({
 
     if (streamId !== previousId) {
       get(this, 'dataLayer').audioTracking('play', sound);
+    } else {
+      get(this, 'dataLayer').audioTracking('resume', sound);
     }
 
     this._sendListenAction(sound, 'start');
