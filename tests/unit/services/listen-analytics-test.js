@@ -1,5 +1,6 @@
 import Ember from "ember";
 import { moduleFor, test } from "ember-qunit";
+import { run, later } from '@ember/runloop';
 import sinon from "sinon";
 import hifiNeeds from "dummy/tests/helpers/hifi-needs";
 import { dummyHifi } from "dummy/tests/helpers/hifi-integration-helpers";
@@ -533,6 +534,7 @@ test("service does not record the pause action immediately preceding an end acti
 });
 
 test("it calls dataLayer.trackAudio with the correct params", function(assert) {
+  let done = assert.async();
   let EventedObject = Ember.Object.extend(Ember.Evented);
   const onDemand = EventedObject.create({
     metadata: {
@@ -561,29 +563,31 @@ test("it calls dataLayer.trackAudio with the correct params", function(assert) {
   });
   let hifi = service.get("hifi");
   
-  Ember.run(() => {
+  run(() => {
     hifi.trigger('audio-played', onDemand);
     hifi.trigger('audio-played', stream);
     
     hifi.trigger('audio-paused', onDemand);
     hifi.trigger('audio-paused', stream);
+  });
     
-    hifi.trigger('audio-ended', onDemand);
-    
+  later(() => {
     onDemand.set('hasPlayed', true);
     hifi.trigger('audio-played', onDemand);
-    onDemand.set('hasPlayed', false);
-  })
+    hifi.trigger('audio-ended', onDemand);
+  }, 150);
   
-  let calls = spy.getCalls();
-  assert.ok(calls[0].calledWith('play', onDemand), 'on demand play');
-  assert.ok(calls[1].calledWith('play', stream), 'stream play');
-  
-  assert.ok(calls[2].calledWith('pause', onDemand), 'on demand pause');
-  assert.ok(calls[3].calledWith('pause', stream), 'stream pause');
-  
-  assert.ok(calls[4].calledWith('end', onDemand), 'on demand end');
-  
-  onDemand.set('hasPlayed', true);
-  assert.ok(calls[5].calledWith('resume', onDemand), 'on demand resume');
+  wait(1000).then(() => {
+    let calls = spy.getCalls();
+    assert.ok(calls[0].calledWith('play', onDemand), 'on demand play');
+    assert.ok(calls[1].calledWith('play', stream), 'stream play');
+    
+    assert.ok(calls[2].calledWith('pause', onDemand), 'on demand pause');
+    assert.ok(calls[3].calledWith('pause', stream), 'stream pause');
+    
+    onDemand.set('hasPlayed', true);
+    assert.ok(calls[4].calledWith('resume', onDemand), 'on demand resume');
+    assert.ok(calls[5].calledWith('end', onDemand), 'on demand end');
+    done();
+  });
 });
