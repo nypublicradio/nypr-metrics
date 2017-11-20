@@ -52,7 +52,7 @@ test("it calls _onAudioPlayed when audio is played", function(assert) {
   let service = this.subject(interceptor);
   let hifi = service.get("hifi");
 
-  Ember.run(() => {
+  run(() => {
     hifi.trigger("audio-played", {});
     hifi.trigger("audio-played", {});
   });
@@ -73,7 +73,7 @@ test("it calls _onAudioPaused when audio is paused", function(assert) {
   let service = this.subject(interceptor);
   let hifi = service.get("hifi");
 
-  Ember.run(() => {
+  run(() => {
     hifi.trigger("audio-paused", {});
     hifi.trigger("audio-paused", {});
   });
@@ -93,7 +93,7 @@ test("it calls _onAudioEnded when audio is ended", function(assert) {
   let service = this.subject(interceptor);
   let hifi = service.get("hifi");
 
-  Ember.run(() => {
+  run(() => {
     hifi.trigger("audio-ended", {});
     hifi.trigger("audio-ended", {});
   });
@@ -125,7 +125,7 @@ test("it calls _onDemandInterrupted when audio is interrupted", function(
     contentModel: {}
   };
 
-  Ember.run(() => {
+  run(() => {
     hifi.play("/good/15000/test1.mp3", { metadata: metadata1 }).then(() => {
       hifi.play("/good/12000/test2.mp3", { metadata: metadata2 }).then(() => {
         assert.equal(
@@ -223,7 +223,7 @@ test("it calls _onStreamSwitch when audio is switched from one stream to another
     }
   });
 
-  Ember.run(() => {
+  run(() => {
     hifi.trigger("current-sound-changed", story);
     assert.equal(spy.callCount, 0, "should not trigger when playing first story");
 
