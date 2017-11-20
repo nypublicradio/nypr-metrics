@@ -35,7 +35,7 @@ export default Service.extend({
     }
 
     this.set('listenActionQueue', Ember.A());
-    this.set('googleQueue', Ember.A());
+    this.set('dataLayerQueue', Ember.A());
 
     get(this, 'hifi').on('audio-played',               bind(this, '_onAudioPlayed'));
     get(this, 'hifi').on('audio-paused',               bind(this, '_onAudioPaused'));
@@ -101,8 +101,8 @@ export default Service.extend({
     let type = get(sound, 'metadata.contentModelType');
 
     if (type !== 'bumper') {
-      get(this, 'dataLayer').audioTracking('end', sound);
       this._sendListenAction(sound, 'finish');
+      this._queueDataLayer(sound, 'end');
     }
   },
 
@@ -144,7 +144,7 @@ export default Service.extend({
       });
     }
 
-    get(this, 'dataLayer').audioTracking(get(sound, 'hasPlayed') ? 'resume' : 'play', sound);
+    this._queueDataLayer(sound, get(sound, 'hasPlayed') ? 'resume' : 'play');
   },
 
   _onDemandPause(sound) {
@@ -158,7 +158,7 @@ export default Service.extend({
     });
 
     this._sendListenAction(sound, 'pause');
-    get(this, 'dataLayer').audioTracking('pause', sound);
+    this._queueDataLayer(sound, 'pause');
   },
 
   _onDemandInterrupted(sound) {
@@ -176,9 +176,9 @@ export default Service.extend({
     let streamName  = get(stream, 'name');
 
     if (streamId !== previousId) {
-      get(this, 'dataLayer').audioTracking('play', sound);
+      this._queueDataLayer(sound, 'play');
     } else {
-      get(this, 'dataLayer').audioTracking('resume', sound);
+      this._queueDataLayer(sound, 'resume');
     }
 
     this._sendListenAction(sound, 'start');
@@ -220,7 +220,7 @@ export default Service.extend({
     });
 
     this._sendListenAction(sound, 'pause');
-    get(this, 'dataLayer').audioTracking('pause', sound);
+    this._queueDataLayer(sound, 'pause');
   },
 
   _onBumperPause(sound) {
@@ -393,32 +393,36 @@ export default Service.extend({
       label = `${region}${analyticsCode}`;
     }
 
-    let queue = get(this, 'googleQueue');
-    queue.push({category, action, label});
-    debounce(this, '_flushGoogle', 100);
+    let metrics = get(this, 'metrics');
+    metrics.trackEvent('GoogleAnalytics', {category, action, label});
+  },
+  
+  _queueDataLayer(sound, type) {
+    let queue = get(this, 'dataLayerQueue');
+    queue.push({type, sound});
+    debounce(this, '_flushDataLayer', 100);
   },
 
-  _flushGoogle() {
-    let queue = get(this, 'googleQueue');
+  _flushDataLayer() {
+    let queue = get(this, 'dataLayerQueue');
 
     if (queue.length === 0) {
       return;
     }
-    queue.forEach(({category, action, label}, index) => {
-      if (action.match(/Pause/) && queue.slice(index).find(info => info.action.match(/Finish/))) {
+    queue.forEach(({type, sound}, index) => {
+      if (type === 'pause' && queue.slice(index).find(info => info.type === 'end')) {
         return;
       }
       else {
-        let metrics = get(this, 'metrics');
-        metrics.trackEvent('GoogleAnalytics', {category, action, label});
+        get(this, 'dataLayer').audioTracking(type, sound);
       }
     });
 
     if (!get(this, 'isDestroying')) {
-      set(this, 'googleQueue', Ember.A());
+      set(this, 'dataLayerQueue', Ember.A());
     }
   },
-
+  
   _trackPlayerEventForNpr(options) {
     let metrics = get(this, 'metrics');
     metrics.trackEvent('NprAnalytics', options);
