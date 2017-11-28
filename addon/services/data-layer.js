@@ -72,6 +72,14 @@ export default Service.extend({
     dataLayer.push(event);
   },
   
+  errorTracking(event, path) {
+    let dataLayer = this.getDataLayer();
+    dataLayer.push({
+      event,
+      'Bad URL Path': path
+    });
+  },
+  
   getDataLayer() {
     if (!window.dataLayer) {
       console.warn('No global dataLayer available'); // eslint-disable-line
