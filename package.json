@@ -1,6 +1,6 @@
 {
   "name": "nypr-metrics",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Analytics and tracking services for NYPR ember apps",
   "keywords": [
     "ember-addon"
