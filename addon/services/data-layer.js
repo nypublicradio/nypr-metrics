@@ -62,6 +62,11 @@ export default Service.extend({
     dataLayer.push({ 'Page Title': title });
   },
   
+  sendPageView() {
+    let dataLayer = this.getDataLayer();
+    dataLayer.push({event: 'Page View'});
+  },
+  
   audioTracking(type, soundObject) {
     if (!['play', 'pause', 'resume', 'end'].includes(type)) {
       return;
