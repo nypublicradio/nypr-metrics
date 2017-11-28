@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.2.1
+- [ENHANCEMENT] Adds `errorTracking` method for 404 and 500 errors
+
 ## 0.2.0
 - [ENHANCEMENT] Adds audio tracking API for audio events to push into the data layer
 
