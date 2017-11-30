@@ -1,5 +1,12 @@
 # nypr-metrics
 
+## Required Config Values
+
+Name | Type | Description
+--- | --- | ---
+`platformEventsAPI` | String | Used by the `data-pipeline` service to fire platform events.
+`siteName` | String | Used by the `npr-analytics` metrics adapter as a data point.
+
 ## service/data-layer
 The `data-layer` service provides a higher-level API to the `dataLayer` provided by Google Tag Manager. The API surface is tailored specifically for NYPR use-cases and can be easily extended as new requirements arise.
 
