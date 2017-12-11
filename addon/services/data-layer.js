@@ -2,6 +2,22 @@ import Service from 'ember-service';
 import get from 'ember-metal/get';
 
 export default Service.extend({
+  push(key, value) {
+    let dataLayer = this.getDataLayer();
+    if (typeof key === 'object') {
+      dataLayer.push(key);
+    } else {
+      dataLayer.push({[key]: value});
+    }
+  },
+
+  clear(...keys) {
+    let dataLayer = this.getDataLayer();
+    let toClear = {};
+    keys.forEach(k => toClear[k] = null);
+    dataLayer.push(toClear);
+  },
+
   setForType(type, instance) {
     let dataLayer = this.getDataLayer();
     let values;

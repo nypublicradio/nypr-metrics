@@ -169,3 +169,18 @@ test('it pushes the expected values into the dataLayer for audio events', functi
     'Audio Show Title': onDemandSound.metadata.contentModel.showTitle
   }));
 });
+
+test('it sets the expected arbitrary values on the dataLayer', function(assert) {
+  let stub = this.stub(window.dataLayer, 'push');
+  
+  let service = this.subject();
+  service.push('Foo Data Key', 'Foo Data Value');
+  service.push({'Key as an Object': 'Value as an object', 'For Adding': 'Multiple Values'});
+  service.clear('Foo Data Key');
+  service.clear('Foo', 'Bar', 'Baz');
+  
+  assert.ok(stub.getCall(0).calledWith({'Foo Data Key': 'Foo Data Value'}), 'can set with a string key/value pair');
+  assert.ok(stub.getCall(1).calledWith({'Key as an Object': 'Value as an object', 'For Adding': 'Multiple Values'}), 'can set with an object');
+  assert.ok(stub.getCall(2).calledWith({'Foo Data Key': null}), 'can clear a single key');
+  assert.ok(stub.getCall(3).calledWith({'Foo': null, 'Bar': null, 'Baz': null}), 'can clear multiple keys');
+});
