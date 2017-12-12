@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.2.4
+- [ENHANCEMENT] Adds npr analytics metrics adapter
+
 ## 0.2.3
 - [ENHANCEMENT] Adds `push` and `clear` methods to `dataLayer`.
 
