@@ -6,6 +6,65 @@ Name | Type | Description
 --- | --- | ---
 `platformEventsAPI` | String | Used by the `data-pipeline` service to fire platform events.
 `siteName` | String | Used by the `npr-analytics` metrics adapter as a data point.
+`metricsAdapters` | Array | Holds adapter specific options
+
+
+## metrics-adapters/npr-analytics
+The `npr-analytics` metrics adapter is designed to work with the `ember-metrics` addon, which is installed as part of the `nypr-metrics` addon as well. A config object for this metrics adapter **must** be added to the `metricsAdapters` array, like so:
+```js
+// config/environment.js
+module.exports = function(environment) {
+  let ENV = {
+    ...
+    metricsAdapters: [{
+      name: 'NprAnalytics',
+      config: {
+        id: 'UA-18188937-11',
+        cookieDomain: 'auto',
+        name: 'npr'
+      }
+    }]
+    ...
+  };
+  ...
+};
+```
+This will allow the web client to comply with NPR's reporting standards.
+
+### Methods
+#### `trackPage`
+
+Send a page view to the NPR account for the given page path and title.
+**Parameters**
+
+Name | Type | Description
+--- | --- | ---
+`options` | Object | An options object with two keys: `page` and `title`
+`options.page` | String | The current page pathname and any query strings. Must start with a forward slash (`/`)
+`options.title` | String | The current page's title
+
+#### `trackEvent`
+
+Fires an event to the NPR google analytics back end
+**Parameters**
+
+Name | Type | Description
+--- | --- | ---
+`options` | Object | An options object with three keys: `category`, `action`, `label`
+`options.category` | String | The category value for the event
+`options.action` | String | The action value for the event
+`options.label` | String | The label value for the event
+
+#### `setDimensions`
+Sets the required dimensions on the NPR analytics tracker. Only needs to be called on detail routes. The `Show`, `Channel`, and `Story` models found in `nypr-publisher-lib` have an `nprAnalyticsDimensions` attribute which can be passed directly to this method.
+
+**Parameters**
+
+Name | Type | Description
+--- | --- | ---
+`options` | Object | An options object with one key: `nprVals`
+`options.nprVals` | Array | An array of values to be set on the NPR tracker. Can accept the `nprAnalyticsDimensions` attribute directly.
+
 
 ## service/data-layer
 The `data-layer` service provides a higher-level API to the `dataLayer` provided by Google Tag Manager. The API surface is tailored specifically for NYPR use-cases and can be easily extended as new requirements arise.
