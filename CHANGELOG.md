@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.2.3
+- [ENHANCEMENT] Adds `push` and `clear` methods to `dataLayer`.
+
 ## 0.2.2
 - [ENHANCEMENT] Adds `sendPageView` method. We can't rely on GTM to trigger this based on a "History Change" event because the document title is not updated until afterwards. So upstream consumers can use this to fire a pageview event from the code. It should be fired in an `afterRender` queue so the title has been updated.
 
