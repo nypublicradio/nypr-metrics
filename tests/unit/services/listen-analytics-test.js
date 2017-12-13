@@ -487,7 +487,7 @@ test("service does not record the pause action immediately preceding an end acti
       service._sendListenAction(sound2, 'pause');
       service._sendListenAction(sound1, 'finish');
 
-      wait(1000).then(() => {
+      wait().then(() => {
         let reportCalls = reportStub.getCalls();
 
         let expectedCalls = [
@@ -577,7 +577,7 @@ test("it calls dataLayer.trackAudio with the correct params", function(assert) {
     hifi.trigger('audio-ended', onDemand);
   }, 150);
   
-  wait(1000).then(() => {
+  wait().then(() => {
     let calls = spy.getCalls();
     assert.ok(calls[0].calledWith('play', onDemand), 'on demand play');
     assert.ok(calls[1].calledWith('play', stream), 'stream play');
