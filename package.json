@@ -19,8 +19,6 @@
   },
   "dependencies": {
     "ember-cli-babel": "^6.6.0",
-    "ember-cli-htmlbars": "^2.0.1",
-    "ember-cli-htmlbars-inline-precompile": "^1.0.0",
     "ember-get-config": "^0.2.2",
     "ember-metrics": "^0.12.1"
   },
@@ -30,6 +28,8 @@
     "ember-cli": "~2.16.2",
     "ember-cli-dependency-checker": "^2.0.0",
     "ember-cli-eslint": "^4.0.0",
+    "ember-cli-htmlbars": "^2.0.1",
+    "ember-cli-htmlbars-inline-precompile": "^1.0.0",
     "ember-cli-inject-live-reload": "^1.4.1",
     "ember-cli-qunit": "^4.0.0",
     "ember-cli-shims": "^1.1.0",
