@@ -224,7 +224,7 @@ export default Service.extend({
   },
 
   _onBumperPause(sound) {
-    let bumperSetting = get(sound, 'metadata.autoplayChoice');
+    let bumperSetting = get(sound, 'metadata.autoPlayChoice');
 
     this._trackPlayerEvent({
       action: 'Paused Bumper',
@@ -396,7 +396,7 @@ export default Service.extend({
     let metrics = get(this, 'metrics');
     metrics.trackEvent('GoogleAnalytics', {category, action, label});
   },
-  
+
   _queueDataLayer(sound, type) {
     let queue = get(this, 'dataLayerQueue');
     queue.push({type, sound});
@@ -422,7 +422,7 @@ export default Service.extend({
       set(this, 'dataLayerQueue', Ember.A());
     }
   },
-  
+
   _trackPlayerEventForNpr(options) {
     let metrics = get(this, 'metrics');
     metrics.trackEvent('NprAnalytics', options);
