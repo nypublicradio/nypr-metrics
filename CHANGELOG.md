@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.2.5
+- [BUGFIX] Fix incorrect casing of passed in autoPlayChoice variable
+
 ## 0.2.4
 - [ENHANCEMENT] Adds npr analytics metrics adapter
 
