@@ -102,7 +102,7 @@ export default Service.extend({
 
     if (type !== 'bumper') {
       this._sendListenAction(sound, 'finish');
-      this._queueDataLayer(sound, 'end');
+      this._pushToDataLayer({sound, type:'end'})
     }
   },
 
@@ -144,7 +144,7 @@ export default Service.extend({
       });
     }
 
-    this._queueDataLayer(sound, get(sound, 'hasPlayed') ? 'resume' : 'play');
+    this._pushToDataLayer({sound, type: get(sound, 'hasPlayed') ? 'resume' : 'play'})
   },
 
   _onDemandPause(sound) {
@@ -158,7 +158,7 @@ export default Service.extend({
     });
 
     this._sendListenAction(sound, 'pause');
-    this._queueDataLayer(sound, 'pause');
+    this._pushToDataLayer({sound, type:'pause'})
   },
 
   _onDemandInterrupted(sound) {
@@ -176,9 +176,9 @@ export default Service.extend({
     let streamName  = get(stream, 'name');
 
     if (streamId !== previousId) {
-      this._queueDataLayer(sound, 'play');
+      this._pushToDataLayer({sound, type:'play'})
     } else {
-      this._queueDataLayer(sound, 'resume');
+      this._pushToDataLayer({sound, type:'resume'})
     }
 
     this._sendListenAction(sound, 'start');
@@ -220,7 +220,7 @@ export default Service.extend({
     });
 
     this._sendListenAction(sound, 'pause');
-    this._queueDataLayer(sound, 'pause');
+    this._pushToDataLayer({sound, type:'pause'})
   },
 
   _onBumperPause(sound) {
@@ -274,7 +274,9 @@ export default Service.extend({
 
   trackAllCodecFailures(failures, sound) {
     if (failures && failures.length) {
-      failures.forEach(failed => this._trackCodecFailure(failed, sound));
+      failures.forEach(failed => {
+        this._trackCodecFailure(failed, sound)
+      });
     }
   },
 
@@ -283,6 +285,9 @@ export default Service.extend({
       action: 'Sound Error',
       label: message
     });
+
+    this._pushToDataLayer({type:'sound_error', label: message});
+
     if (failures && failures.length) {
       failures.forEach(failed => this._trackCodecFailure(failed));
     }
@@ -369,11 +374,12 @@ export default Service.extend({
   },
 
   _trackCodecFailure({connectionName, error, url}, sound) {
-    this._trackPlayerEvent({
-      story: get(sound, 'metadata.contentModel'),
-      action: `Codec Failure | ${connectionName}`,
-      label: `reason: ${error} | bad url: ${url} | ${sound ? `good url: ${get(sound, 'url')}` : 'no successful url'}`
-    });
+    let story = get(sound, 'metadata.contentModel');
+    let action = `Codec Failure | ${connectionName}`;
+    let label = `reason: ${error} | bad url: ${url} | ${sound ? `good url: ${get(sound, 'url')}` : 'no successful url'}`;
+
+    this._trackPlayerEvent({story, action, label});
+    this._pushToDataLayer({type: 'codec_failure', label})
   },
 
   _trackPlayerEvent(options) {
@@ -397,9 +403,9 @@ export default Service.extend({
     metrics.trackEvent('GoogleAnalytics', {category, action, label});
   },
 
-  _queueDataLayer(sound, type) {
+  _pushToDataLayer(data) {
     let queue = get(this, 'dataLayerQueue');
-    queue.push({type, sound});
+    queue.push(data);
     debounce(this, '_flushDataLayer', 100);
   },
 
@@ -409,9 +415,12 @@ export default Service.extend({
     if (queue.length === 0) {
       return;
     }
-    queue.forEach(({type, sound}, index) => {
+    queue.forEach(({type, sound, label}, index) => {
       if (type === 'pause' && queue.slice(index).find(info => info.type === 'end')) {
         return;
+      }
+      else if (['codec_failure', 'sound_error'].includes(type)) {
+        get(this, 'dataLayer').audioErrorTracking(type, label);
       }
       else {
         get(this, 'dataLayer').audioTracking(type, sound);

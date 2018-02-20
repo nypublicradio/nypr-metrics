@@ -100,7 +100,15 @@ export default Service.extend({
       'Bad URL Path': path
     });
   },
-  
+
+  audioErrorTracking(event, message) {
+    let dataLayer = this.getDataLayer();
+    dataLayer.push({
+      event,
+      'Error Details': message
+    });
+  },
+
   getDataLayer() {
     if (!window.dataLayer) {
       console.warn('No global dataLayer available'); // eslint-disable-line
