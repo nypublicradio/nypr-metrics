@@ -1,3 +1,7 @@
+import { Promise as EmberPromise } from 'rsvp';
+import { A } from '@ember/array';
+import $ from 'jquery';
+import { getWithDefault } from '@ember/object';
 import Ember from 'ember';
 import Service from 'ember-service';
 import service from 'ember-service/inject';
@@ -6,7 +10,6 @@ import get from 'ember-metal/get';
 import set from 'ember-metal/set';
 import { bind, debounce } from 'ember-runloop';
 import { classify as upperCamelize } from 'ember-string';
-const { getWithDefault } = Ember;
 
 const TWO_MINUTES     = 1000 * 60 * 2;
 
@@ -27,15 +30,15 @@ export default Service.extend({
     });
 
     if (!Ember.testing) {
-      Ember.$(window).on('beforeunload', () => {
+      $(window).on('beforeunload', () => {
         if (this.get('currentSound')) {
           this._sendListenAction(this.get('currentSound'), 'close');
         }
       });
     }
 
-    this.set('listenActionQueue', Ember.A());
-    this.set('dataLayerQueue', Ember.A());
+    this.set('listenActionQueue', A());
+    this.set('dataLayerQueue', A());
 
     get(this, 'hifi').on('audio-played',               bind(this, '_onAudioPlayed'));
     get(this, 'hifi').on('audio-paused',               bind(this, '_onAudioPaused'));
@@ -286,7 +289,7 @@ export default Service.extend({
       label: message
     });
 
-    this._pushToDataLayer({type:'sound_error', label: message});
+    this._pushToDataLayer({type:'audioError', errorType: "Sound Error", errorDetails: message});
 
     if (failures && failures.length) {
       failures.forEach(failed => this._trackCodecFailure(failed));
@@ -315,7 +318,7 @@ export default Service.extend({
     let showTitle  = get(stream, 'currentShow.show_title') || get(stream, 'currentShow.title');
     let streamName = get(stream, 'name');
 
-    Ember.RSVP.Promise.resolve(get(stream, 'story')).then(story => {
+    EmberPromise.resolve(get(stream, 'story')).then(story => {
       let storyTitle = story ? get(story, 'title') : 'no title';
 
       this._trackPlayerEvent({
@@ -369,7 +372,7 @@ export default Service.extend({
     });
 
     if (!get(this, 'isDestroying')) {
-      set(this, 'listenActionQueue', Ember.A());
+      set(this, 'listenActionQueue', A());
     }
   },
 
@@ -379,7 +382,7 @@ export default Service.extend({
     let label = `reason: ${error} | bad url: ${url} | ${sound ? `good url: ${get(sound, 'url')}` : 'no successful url'}`;
 
     this._trackPlayerEvent({story, action, label});
-    this._pushToDataLayer({type: 'codec_failure', label})
+    this._pushToDataLayer({type:'audioError', errorType: action, errorDetails: label})
   },
 
   _trackPlayerEvent(options) {
@@ -415,12 +418,12 @@ export default Service.extend({
     if (queue.length === 0) {
       return;
     }
-    queue.forEach(({type, sound, label}, index) => {
+    queue.forEach(({type, sound, errorType, errorDetails}, index) => {
       if (type === 'pause' && queue.slice(index).find(info => info.type === 'end')) {
         return;
       }
-      else if (['codec_failure', 'sound_error'].includes(type)) {
-        get(this, 'dataLayer').audioErrorTracking(type, label);
+      else if (type === 'soundError') {
+        get(this, 'dataLayer').audioErrorTracking(errorType, errorDetails);
       }
       else {
         get(this, 'dataLayer').audioTracking(type, sound);
@@ -428,7 +431,7 @@ export default Service.extend({
     });
 
     if (!get(this, 'isDestroying')) {
-      set(this, 'dataLayerQueue', Ember.A());
+      set(this, 'dataLayerQueue', A());
     }
   },
 

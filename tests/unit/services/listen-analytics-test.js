@@ -1,4 +1,7 @@
-import Ember from "ember";
+import { Promise as EmberPromise } from 'rsvp';
+import Evented from '@ember/object/evented';
+import EmberObject from '@ember/object';
+import Service from '@ember/service';
 import { moduleFor, test } from "ember-qunit";
 import { run, later } from '@ember/runloop';
 import sinon from "sinon";
@@ -12,7 +15,7 @@ moduleFor("service:listen-analytics", "Unit | Service | listen analytics", {
     this.register("service:hifi", dummyHifi);
     this.inject.service("hifi");
 
-    let pipeline = Ember.Service.extend({
+    let pipeline = Service.extend({
       reportListenAction: function() {}
     });
 
@@ -183,14 +186,14 @@ test("it calls _onStreamSwitch when audio is switched from one stream to another
   let spy = sinon.stub(service, "_onStreamSwitch");
   let hifi = service.get("hifi");
 
-  let EventedObject = Ember.Object.extend(Ember.Evented);
+  let EventedObject = EmberObject.extend(Evented);
 
   let stream1 = EventedObject.create({
     name: "stream 1",
     metadata: {
       contentModel: {
         forListenAction: function() {
-          return Ember.RSVP.Promise.resolve({});
+          return EmberPromise.resolve({});
         }
       },
       contentModelType: "stream",
@@ -203,7 +206,7 @@ test("it calls _onStreamSwitch when audio is switched from one stream to another
     metadata: {
       contentModel: {
         forListenAction: function() {
-          return Ember.RSVP.Promise.resolve({});
+          return EmberPromise.resolve({});
         }
       },
       contentModelType: "stream",
@@ -215,7 +218,7 @@ test("it calls _onStreamSwitch when audio is switched from one stream to another
     metadata: {
       contentModel: {
         forListenAction: function() {
-          return Ember.RSVP.Promise.resolve({});
+          return EmberPromise.resolve({});
         }
       },
       contentModelType: "story",
@@ -535,7 +538,7 @@ test("service does not record the pause action immediately preceding an end acti
 
 test("it calls dataLayer.trackAudio with the correct params", function(assert) {
   let done = assert.async();
-  let EventedObject = Ember.Object.extend(Ember.Evented);
+  let EventedObject = EmberObject.extend(Evented);
   const onDemand = EventedObject.create({
     metadata: {
       contentModelType: 'story',
