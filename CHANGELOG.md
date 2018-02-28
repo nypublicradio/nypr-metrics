@@ -1,4 +1,6 @@
 # nypr-metrics Changelog
+## 0.2.6
+- [ENHANCEMENT] Send audio errors to GTM
 
 ## 0.2.5
 - [BUGFIX] Fix incorrect casing of passed in autoPlayChoice variable
