@@ -422,7 +422,7 @@ export default Service.extend({
       if (type === 'pause' && queue.slice(index).find(info => info.type === 'end')) {
         return;
       }
-      else if (type === 'soundError') {
+      else if (type === 'audioError') {
         get(this, 'dataLayer').audioErrorTracking(errorType, errorDetails);
       }
       else {
