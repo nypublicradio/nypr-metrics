@@ -1,5 +1,5 @@
-import Service from 'ember-service';
-import get from 'ember-metal/get';
+import Service from '@ember/service';
+import { get } from '@ember/object';
 
 export default Service.extend({
   push(key, value) {

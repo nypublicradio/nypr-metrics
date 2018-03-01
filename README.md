@@ -176,7 +176,7 @@ A recent update to `ember-hifi` allows consumers to attach arbitrary data to a `
 Google Analytics events still include the `analyticsCode`, but this will soon be replaced by a simple string formatted as `<show title> | <story title>`.`
 
 ## service/data-pipeline
-This service packages up data and fires it off to the platform events microservice. The service is configured to look for a `browserId` property on itself and include it in outgoing requests. It will also call an `authorize` method which the client can use to update the passed in `fetchOptions`. 
+This service packages up data and fires it off to the platform events microservice. The service is configured to look for a `browserId` property on itself and include it in outgoing requests. It will also call an `authorize` method which the client can use to update the passed in `fetchOptions`.
 
 ## Client Integration
 

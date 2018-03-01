@@ -1,8 +1,8 @@
-import Route from 'ember-route';
-import service from 'ember-service/inject';
+import Route from '@ember/route';
+import { inject } from '@ember/service';
 
 export default Route.extend({
-  dataLayer: service('nypr-metrics/data-layer'),
+  dataLayer: inject('nypr-metrics/data-layer'),
   afterModel(model) {
     this.get('dataLayer').setForType('story', model);
   }

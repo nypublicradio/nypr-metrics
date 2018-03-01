@@ -1,10 +1,8 @@
-import Service from 'ember-service';
+import Service, { inject } from '@ember/service';
 import fetch from 'fetch';
-import service from 'ember-service/inject';
 import config from 'ember-get-config';
-import { next } from 'ember-runloop';
-import get from 'ember-metal/get';
-import set from 'ember-metal/set';
+import { next } from '@ember/runloop';
+import { get, set } from '@ember/object';
 
 const LISTEN_ACTIONS = {
   START: 'start',
@@ -23,7 +21,7 @@ export default Service.extend({
   listenActionPath: 'v1/events/listened',
   currentReferrer:  null,
 
-  poll:         service(),
+  poll:         inject(),
 
   init() {
     set(this, '_delta', 0);

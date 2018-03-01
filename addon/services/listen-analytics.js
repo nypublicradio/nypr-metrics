@@ -1,25 +1,22 @@
+import Ember from 'ember';
+import Service, { inject } from '@ember/service';
 import { Promise as EmberPromise } from 'rsvp';
 import { A } from '@ember/array';
 import $ from 'jquery';
-import { getWithDefault } from '@ember/object';
-import Ember from 'ember';
-import Service from 'ember-service';
-import service from 'ember-service/inject';
-import computed from 'ember-computed';
-import get from 'ember-metal/get';
-import set from 'ember-metal/set';
-import { bind, debounce } from 'ember-runloop';
-import { classify as upperCamelize } from 'ember-string';
+import { get, set, getWithDefault } from '@ember/object';
+import { reads } from '@ember/object/computed';
+import { bind, debounce } from '@ember/runloop';
+import { classify as upperCamelize } from '@ember/string';
 
 const TWO_MINUTES     = 1000 * 60 * 2;
 
 export default Service.extend({
-  hifi        : service(),
-  dataPipeline: service(),
-  metrics     : service(),
-  dataLayer   : service('nypr-metrics/data-layer'),
-  poll        : service(),
-  currentSound: computed.reads('hifi.currentSound'),
+  hifi        : inject(),
+  dataPipeline: inject(),
+  metrics     : inject(),
+  dataLayer   : inject('nypr-metrics/data-layer'),
+  poll        : inject(),
+  currentSound: reads('hifi.currentSound'),
   sessionPing : TWO_MINUTES,
 
   init() {
