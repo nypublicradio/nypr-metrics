@@ -28,6 +28,9 @@ export default Service.extend({
       case 'show':
         values = this._valuesForShow(instance);
         break;
+      case 'series':
+        values = this._valuesForSeries(instance);
+        break;
     }
 
     dataLayer.push(values);
@@ -42,11 +45,17 @@ export default Service.extend({
           'Date Published': null,
           'Show Name': null,
           'Story Title': null,
+          'Story Template': null,
         });
         break;
       case 'show':
         dataLayer.push({
           'Show Name': null
+        });
+        break;
+      case 'series':
+        dataLayer.push({
+          'Series Name': null
         });
         break;
     }
@@ -125,7 +134,8 @@ export default Service.extend({
     values['Authors'] = get(story, 'appearances.authors').map(a => a.name).join(', ');
     values['Date Published'] = get(story, 'newsdate');
     values['Show Name'] = get(story, 'showTitle') || get(story, 'channelTitle');
-    values['Story Title'] = get(story, 'title')
+    values['Story Title'] = get(story, 'title');
+    values['Story Template'] = get(story, 'template');
 
     return values;
   },
@@ -135,6 +145,13 @@ export default Service.extend({
       'Show Name': get(show, 'title')
     };
   },
+
+  _valuesForSeries(series) {
+    return {
+      'Series Name': get(series, 'title')
+    };
+  },
+
 
   _audioEventForType(soundObject) {
     let { contentModelType:type, contentModel:model } = get(soundObject, 'metadata');
