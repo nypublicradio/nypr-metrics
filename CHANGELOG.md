@@ -1,4 +1,7 @@
 # nypr-metrics Changelog
+## 0.3.0
+- [CHORE] Update to Ember 3.0 and new module syntax
+
 ## 0.2.6
 - [ENHANCEMENT] Send audio errors to GTM
 
