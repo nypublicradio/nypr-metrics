@@ -1,4 +1,7 @@
 # nypr-metrics Changelog
+## 0.3.1
+- [BUGFIX] Fixed a missing `super` call in an init
+
 ## 0.3.0
 - [CHORE] Update to Ember 3.0 and new module syntax
 
