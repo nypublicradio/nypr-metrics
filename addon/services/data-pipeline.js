@@ -25,6 +25,7 @@ export default Service.extend({
 
   init() {
     set(this, '_delta', 0);
+    this._super(...arguments);
   },
 
   browserId: null,
