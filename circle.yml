@@ -1,21 +1,44 @@
-machine:
-  node:
-    version: 8
-dependencies:
-  override:
-    - curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    - sudo dpkg -i google-chrome.deb
-    - sudo sed -i 's|HERE/chrome\"|HERE/chrome\" --disable-setuid-sandbox|g' /opt/google/chrome/google-chrome
-    - rm google-chrome.deb
-    - yarn --pure-lockfile
+version: 2
 
-test:
-  override:
-    - yarn test
+jobs:
+  install:
+    docker:
+      - image: circleci/node:8.7
 
-# deployment:
-#   docs:
-#     branch: master
-#     commands:
-#       - git checkout gh-pages; git checkout master
-#       - ./node_modules/ember-cli/bin/ember deploy production
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: node-deps-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install node dependencies
+          command: yarn --pure-lockfile
+      - save_cache:
+          key: node-deps-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+
+  test:
+    docker:
+      - image: circleci/node:8.7-browsers
+        environment:
+          JOBS: 2
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: node-deps-{{ checksum "yarn.lock" }}
+      - run:
+          name: Test
+          command: ./node_modules/ember-cli/bin/ember test
+
+workflows:
+  version: 2
+  just-test:
+    jobs:
+      - install
+      - test:
+          requires:
+            - install
+
+
