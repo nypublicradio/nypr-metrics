@@ -9,12 +9,15 @@ jobs:
       - checkout
 
       - restore_cache:
-          key: node-deps-{{ checksum "yarn.lock" }}
+          key: v2-node8-yarn-deps-{{ arch }}-{{ checksum "yarn.lock" }}
       - run:
           name: Install node dependencies
-          command: yarn --pure-lockfile
+          command: |
+            if [ ! -d ./node_modules ]; then
+              yarn --pure-lockfile
+            fi
       - save_cache:
-          key: node-deps-{{ checksum "yarn.lock" }}
+          key: v2-node8-yarn-deps-{{ arch }}-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
 
@@ -27,10 +30,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: node-deps-{{ checksum "yarn.lock" }}
+          key: v2-node8-yarn-deps-{{ arch }}-{{ checksum "yarn.lock" }}
       - run:
           name: Test
-          command: ./node_modules/ember-cli/bin/ember test
+          command: npx ember test
 
 workflows:
   version: 2
