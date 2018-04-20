@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import Service, { inject } from '@ember/service';
-import { Promise as EmberPromise } from 'rsvp';
 import { A } from '@ember/array';
 import $ from 'jquery';
 import { get, set, getWithDefault } from '@ember/object';
@@ -307,27 +306,8 @@ export default Service.extend({
     });
   },
 
-  trackStreamData(sound) {
-    let stream     = get(sound, 'metadata.contentModel');
-    let showTitle  = get(stream, 'currentShow.show_title') || get(stream, 'currentShow.title');
-    let streamName = get(stream, 'name');
-
-    EmberPromise.resolve(get(stream, 'story')).then(story => {
-      let storyTitle = story ? get(story, 'title') : 'no title';
-
-      this._trackPlayerEvent({
-        action: `Streamed Show "${showTitle}" on ${streamName}`,
-        label: storyTitle
-      });
-
-      if (story) {
-        this._trackPlayerEvent({
-          action: `Streamed Story "${storyTitle}" on "${streamName}"`,
-          withAnalytics: true,
-          story
-        });
-      }
-    });
+  trackStreamData() {
+    console.warn('trackStreamData called'); // eslint-disable-line
   },
 
 
