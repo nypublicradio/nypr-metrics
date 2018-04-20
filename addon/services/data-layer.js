@@ -154,6 +154,9 @@ export default Service.extend({
       case 'stream':
         return {
           event: 'Livestream Audio Playback',
+          'Audio Story Title': get(model, 'currentShow.episodeTitle'),
+          'Audio Show Title': get(model, 'currentShow.showTitle'),
+          'Audio Stream Name': get(model, 'name'),
           'Playback Source': source,
         };
     }
