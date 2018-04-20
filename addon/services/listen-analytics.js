@@ -250,10 +250,7 @@ export default Service.extend({
 
   _onPlayerPing() {
     if (get(this, 'hifi.isPlaying')) {
-      get(this, 'metrics').trackEvent('GoogleAnalytics', {
-          category: 'Persistent Player',
-          action: '2 Minute Ping',
-        });
+      get(this, 'dataLayer').getDataLayer().push({event: 'playerPing'});
     }
   },
 
