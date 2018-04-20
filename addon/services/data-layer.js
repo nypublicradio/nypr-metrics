@@ -84,7 +84,7 @@ export default Service.extend({
   },
 
   audioTracking(type, soundObject) {
-    if (!['play', 'pause', 'resume', 'end'].includes(type)) {
+    if (!['play', 'pause', 'resume', 'end', 'schedule'].includes(type)) {
       return;
     }
     let dataLayer = this.getDataLayer();
