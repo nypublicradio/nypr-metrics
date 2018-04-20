@@ -137,17 +137,24 @@ export default Service.extend({
   },
 
   _audioEventForType(soundObject) {
-    let { contentModelType:type, contentModel:model } = get(soundObject, 'metadata');
+    let { contentModelType:type, contentModel:model, playContext:source } = get(soundObject, 'metadata');
+
+    if (!['discover', 'Continuous Play', 'queue'].includes(source)) {
+      source = null;
+    }
+    
     switch(type) {
       case 'story': // on demand
         return {
           event: 'On Demand Audio Playback',
           'Audio Story Title': get(model, 'title'),
-          'Audio Show Title': get(model, 'showTitle')
+          'Audio Show Title': get(model, 'showTitle'),
+          'Playback Source': source,
         };
       case 'stream':
         return {
-          event: 'Livestream Audio Playback'
+          event: 'Livestream Audio Playback',
+          'Playback Source': source,
         };
     }
   }
