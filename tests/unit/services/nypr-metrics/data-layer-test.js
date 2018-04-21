@@ -24,14 +24,14 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       showTitle: 'Baz Buz',
       title: 'Bing Bang'
     };
-    
+
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Authors': 'Foo Bar, Fuzz Buzz',
       'Date Published': story.newsdate,
       'Show Name': story.showTitle,
       'Story Title': story.title
     });
-    
+
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
     service.setForType('story', story);
   });
@@ -43,7 +43,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Show Name': null,
       'Story Title': null,
     });
-    
+
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
     service.clearForType('story');
   });
@@ -52,11 +52,11 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
     const show = {
       title: 'Foo Show'
     };
-    
+
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Show Name': show.title,
     });
-    
+
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
     service.setForType('show', show);
   });
@@ -65,47 +65,47 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Show Name': null,
     });
-    
+
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
     service.clearForType('show');
   });
 
   test('it sets the expected dataLayer value for logged in states', function(assert) {
     let spy = this.spy(window.dataLayer, 'push');
-    
+
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
     service.setLoggedIn(true);
     service.setLoggedIn(false);
-    
+
     assert.ok(spy.firstCall.calledWith({ 'Logged In': true }));
     assert.ok(spy.secondCall.calledWith({ 'Logged In': false }));
-    
+
     service.setLoggedIn('something else');
     assert.equal(spy.callCount, 2, 'invalid arguments are not pushed into the dataLayer');
   });
 
   test('it sets the exepcted dataLayer value for member status', function(assert) {
     let spy = this.spy(window.dataLayer, 'push');
-    
+
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
     service.setMemberStatus('Nonmember');
     service.setMemberStatus('One-Time Donor');
     service.setMemberStatus('Sustainer');
-    
+
     assert.ok(spy.firstCall.calledWith({ 'Member Status': 'Nonmember' }));
     assert.ok(spy.secondCall.calledWith({ 'Member Status': 'One-Time Donor' }));
     assert.ok(spy.thirdCall.calledWith({ 'Member Status': 'Sustainer' }));
-    
+
     service.setMemberStatus('something else');
     assert.equal(spy.callCount, 3, 'invalid arguments are not pushed into the dataLayer');
   });
 
   test('it sets the exepcted dataLayer value for page title', function(assert) {
     let spy = this.spy(window.dataLayer, 'push');
-    
+
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
     service.setPageTitle('Foo Title');
-    
+
     assert.ok(spy.firstCall.calledWith({ 'Page Title': 'Foo Title' }));
   });
 
@@ -119,7 +119,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
         }
       }
     };
-    
+
     const streamSound = {
       metadata: {
         contentModelType: 'stream',
@@ -132,20 +132,20 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
         },
       }
     };
-    
+
     let spy = this.spy(window.dataLayer, 'push');
-    
+
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
     service.audioTracking('play', onDemandSound);
     service.audioTracking('play', streamSound);
-    
+
     service.audioTracking('pause', onDemandSound);
     service.audioTracking('pause', streamSound);
-    
+
     service.audioTracking('end', onDemandSound);
-    
+
     let calls = spy.getCalls();
-    
+
     assert.ok(calls[0].calledWith({
       event: 'On Demand Audio Playback',
       'Playback State': 'play',
@@ -191,13 +191,13 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
 
   test('it sets the expected arbitrary values on the dataLayer', function(assert) {
     let stub = this.stub(window.dataLayer, 'push');
-    
+
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
     service.push('Foo Data Key', 'Foo Data Value');
     service.push({'Key as an Object': 'Value as an object', 'For Adding': 'Multiple Values'});
     service.clear('Foo Data Key');
     service.clear('Foo', 'Bar', 'Baz');
-    
+
     assert.ok(stub.getCall(0).calledWith({'Foo Data Key': 'Foo Data Value'}), 'can set with a string key/value pair');
     assert.ok(stub.getCall(1).calledWith({'Key as an Object': 'Value as an object', 'For Adding': 'Multiple Values'}), 'can set with an object');
     assert.ok(stub.getCall(2).calledWith({'Foo Data Key': null}), 'can clear a single key');
