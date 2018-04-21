@@ -123,7 +123,13 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
     const streamSound = {
       metadata: {
         contentModelType: 'stream',
-        contentModel: {}
+        contentModel: {
+          name: 'Stream Name',
+          currentShow: {
+            episodeTitle: 'Foo Episode',
+            showTitle: 'Bar Show',
+          }
+        },
       }
     };
     
@@ -144,32 +150,43 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       event: 'On Demand Audio Playback',
       'Playback State': 'play',
       'Audio Story Title': onDemandSound.metadata.contentModel.title,
-      'Audio Show Title': onDemandSound.metadata.contentModel.showTitle
-    }));
-    
+      'Audio Show Title': onDemandSound.metadata.contentModel.showTitle,
+      'Playback Source': null,
+    }), 'on demand play');
+
     assert.ok(calls[1].calledWith({
       event: 'Livestream Audio Playback',
-      'Playback State': 'play'
-    }));
-    
+      'Playback State': 'play',
+      'Audio Story Title': 'Foo Episode',
+      'Audio Show Title': 'Bar Show',
+      'Audio Stream Name': 'Stream Name',
+      'Playback Source': null,
+    }), 'livestream play');
+
     assert.ok(calls[2].calledWith({
       event: 'On Demand Audio Playback',
       'Playback State': 'pause',
       'Audio Story Title': onDemandSound.metadata.contentModel.title,
-      'Audio Show Title': onDemandSound.metadata.contentModel.showTitle
-    }));
-    
+      'Audio Show Title': onDemandSound.metadata.contentModel.showTitle,
+      'Playback Source': null,
+    }), 'on demand pause');
+
     assert.ok(calls[3].calledWith({
       event: 'Livestream Audio Playback',
-      'Playback State': 'pause'
-    }));
-    
+      'Playback State': 'pause',
+      'Audio Story Title': 'Foo Episode',
+      'Audio Show Title': 'Bar Show',
+      'Audio Stream Name': 'Stream Name',
+      'Playback Source': null,
+    }), 'livestream pause');
+
     assert.ok(calls[4].calledWith({
       event: 'On Demand Audio Playback',
       'Playback State': 'end',
       'Audio Story Title': onDemandSound.metadata.contentModel.title,
-      'Audio Show Title': onDemandSound.metadata.contentModel.showTitle
-    }));
+      'Audio Show Title': onDemandSound.metadata.contentModel.showTitle,
+      'Playback Source': null,
+    }), 'on demand end');
   });
 
   test('it sets the expected arbitrary values on the dataLayer', function(assert) {
