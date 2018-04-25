@@ -83,6 +83,11 @@ export default Service.extend({
     dataLayer.push({event: 'Page View'});
   },
 
+  send404() {
+    let dataLayer = this.getDataLayer();
+    dataLayer.push({event: '404'});
+  },
+
   audioTracking(type, soundObject) {
     if (!['play', 'pause', 'resume', 'end', 'schedule'].includes(type)) {
       return;
