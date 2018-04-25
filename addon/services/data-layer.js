@@ -42,11 +42,28 @@ export default Service.extend({
           'Date Published': null,
           'Show Name': null,
           'Story Title': null,
+          'Story Template': null,
+          'Item Type': null,
+          'ID': null,
+          'Major Tags': null,
+          'Tags': null,
+          'Org ID': null,
+          'Has Audio': null,
+          'Word Count': null,
+          'NPR ID': null,
         });
         break;
       case 'show':
         dataLayer.push({
-          'Show Name': null
+          'Show Name': null,
+          'Item Type': null,
+          'ID': null,
+          'Major Tags': null,
+          'Tags': null,
+          'Org ID': null,
+          'Has Audio': null,
+          'Word Count': null,
+          'NPR ID': null,
         });
         break;
     }
@@ -129,16 +146,40 @@ export default Service.extend({
 
     values['Authors'] = get(story, 'appearances.authors').map(a => a.name).join(', ');
     values['Date Published'] = get(story, 'newsdate');
-    values['Show Name'] = get(story, 'showTitle') || get(story, 'channelTitle');
+    values['Show Name'] = get(story, 'showTitle') || get(story, 'channelTitle') || 'NPR Article?';
     values['Story Title'] = get(story, 'title')
+    values['Story Template'] = get(story, 'template');
+
+    // for NPR
+    let nprVals = get(story, 'nprAnalyticsDimensions');
+    values['Item Type'] = get(story, 'itemType');
+    values['ID'] = get(story, 'cmsPK').toString();
+    values['Major Tags'] = nprVals[4];
+    values['Tags'] = get(story, 'tags').join(',');
+    values['Org ID'] = nprVals[7]
+    values['Has Audio'] = nprVals[9];
+    values['Word Count'] = nprVals[12];
+    values['NPR ID'] = nprVals[13];
 
     return values;
   },
 
   _valuesForShow(show) {
-    return {
-      'Show Name': get(show, 'title')
-    };
+    let values = {};
+
+    values['Show Name'] = get(show, 'title')
+
+    // for NPR
+    values['Item Type'] = get(show, 'itemType');
+    values['ID'] = get(show, 'cmsPK').toString();
+    values['Major Tags'] = 'none';
+    values['Tags'] = 'none';
+    values['Org ID'] = '0';
+    values['Has Audio'] = '0';
+    values['Word Count'] = 'none';
+    values['NPR ID'] = 'none';
+
+    return values;
   },
 
   _audioEventForType(soundObject) {
