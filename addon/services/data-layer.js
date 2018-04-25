@@ -75,7 +75,7 @@ export default Service.extend({
     }
     let dataLayer = this.getDataLayer();
     dataLayer.push({
-      'Logged In': state
+      'Logged In': state.toString()
     });
   },
 
