@@ -188,7 +188,7 @@ export default Service.extend({
     if (!['discover', 'Continuous Play', 'queue'].includes(source)) {
       source = null;
     }
-    
+
     switch(type) {
       case 'story': // on demand
         return {
