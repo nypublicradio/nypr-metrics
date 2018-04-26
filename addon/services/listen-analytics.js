@@ -282,13 +282,6 @@ export default Service.extend({
     }
   },
 
-  trackDismissAutoplayNotification() {
-    this._trackPlayerEvent({
-      action: 'Continuous Play Notification',
-      label: 'Click to Close Notification'
-    });
-  },
-
   trackAddToQueue(story, region) {
     this._trackPlayerEvent({
       action: 'Add Story to Queue',
