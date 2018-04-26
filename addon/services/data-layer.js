@@ -18,6 +18,10 @@ export default Service.extend({
     dataLayer.push(toClear);
   },
 
+  trigger(eventName) {
+    this.push('event', eventName);
+  },
+
   setForType(type, instance) {
     let dataLayer = this.getDataLayer();
     let values;
