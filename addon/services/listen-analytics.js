@@ -92,7 +92,7 @@ export default Service.extend({
       this._onStreamPlay(sound);
     }
     else if (type === 'bumper') {
-      this._onBumperPlay(sound);
+      this.get('dataLayer').trigger('Audio Bumper Play');
     }
   },
 
@@ -231,13 +231,6 @@ export default Service.extend({
     });
 
     this._sendListenAction(sound, 'pause');
-  },
-
-  _onBumperPlay() {
-    this._trackPlayerEvent({
-      action: 'Continuous Play Notification',
-      label: 'Audio Bumper',
-    });
   },
 
   _onQueueAutoplay() {
