@@ -29,9 +29,14 @@ export default Service.extend({
       case 'story':
         values = this._valuesForStory(instance);
         break;
+      case 'articlechannel':
+      case 'series':
       case 'show':
-        values = this._valuesForShow(instance);
+      case 'tag':
+        values = this._valuesForContainer(instance);
         break;
+      default:
+        values = {};
     }
 
     dataLayer.push(values);
@@ -68,6 +73,9 @@ export default Service.extend({
           'Has Audio': null,
           'Word Count': null,
           'NPR ID': null,
+          'Article Channel Name': null,
+          'Series Name': null,
+          'Tag Name': null,
         });
         break;
     }
@@ -168,14 +176,26 @@ export default Service.extend({
     return values;
   },
 
-  _valuesForShow(show) {
+  _valuesForContainer(container) {
     let values = {};
 
-    values['Show Name'] = get(show, 'title')
+    switch(get(container, 'itemType'))  {
+      case 'show':
+        values['Show Name'] = get(container, 'title')
+        break;
+      case 'series':
+        values['Series Name'] = get(container, 'title')
+        break;
+      case 'articlechannel':
+        values['Article Channel Name'] = get(container, 'title')
+        break;
+      case 'tag':
+        values['Tag Name'] = get(container, 'title');
+    }
 
     // for NPR
-    values['Item Type'] = get(show, 'itemType');
-    values['ID'] = get(show, 'cmsPK').toString();
+    values['Item Type'] = get(container, 'itemType');
+    values['ID'] = get(container, 'cmsPK').toString();
     values['Major Tags'] = 'none';
     values['Tags'] = 'none';
     values['Org ID'] = '0';
