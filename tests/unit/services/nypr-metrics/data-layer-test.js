@@ -22,14 +22,28 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       },
       newsdate: '2017-01-01',
       showTitle: 'Baz Buz',
-      title: 'Bing Bang'
+      title: 'Bing Bang',
+      template: 'default',
+      nprAnalyticsDimensions: [...new Array(4),'news', ...new Array(2), '1', null, true, null, null, 150, '5'],
+      itemType: 'episode',
+      cmsPK: 500,
+      tags: ['politics', 'entertainment']
     };
 
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Authors': 'Foo Bar, Fuzz Buzz',
       'Date Published': story.newsdate,
       'Show Name': story.showTitle,
-      'Story Title': story.title
+      'Story Title': story.title,
+      'Story Template': 'default',
+      'Item Type': 'episode',
+      'ID': '500',
+      'Major Tags': 'news',
+      'Tags': 'politics,entertainment',
+      'Org ID': '1',
+      'Has Audio': true,
+      'Word Count': 150,
+      'NPR ID': '5'
     });
 
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
@@ -42,6 +56,15 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Date Published': null,
       'Show Name': null,
       'Story Title': null,
+      'Story Template': null,
+      'Item Type': null,
+      'ID': null,
+      'Major Tags': null,
+      'Tags': null,
+      'Org ID': null,
+      'Has Audio': null,
+      'Word Count': null,
+      'NPR ID': null,
     });
 
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
@@ -50,11 +73,21 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
 
   test('it sets the expected dataLayer values for a show', function() {
     const show = {
-      title: 'Foo Show'
+      title: 'Foo Show',
+      itemType: 'show',
+      cmsPK: 100,
     };
 
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Show Name': show.title,
+      'Item Type': 'show',
+      'ID': '100',
+      'Major Tags': 'none',
+      'Tags': 'none',
+      'Org ID': '0',
+      'Has Audio': '0',
+      'Word Count': 'none',
+      'NPR ID': 'none',
     });
 
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
@@ -64,6 +97,17 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
   test('it clears the expected dataLayer values for a show', function() {
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Show Name': null,
+      'Item Type': null,
+      'ID': null,
+      'Major Tags': null,
+      'Tags': null,
+      'Org ID': null,
+      'Has Audio': null,
+      'Word Count': null,
+      'NPR ID': null,
+      'Article Channel Name': null,
+      'Series Name': null,
+      'Tag Name': null,
     });
 
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
@@ -77,8 +121,8 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
     service.setLoggedIn(true);
     service.setLoggedIn(false);
 
-    assert.ok(spy.firstCall.calledWith({ 'Logged In': true }));
-    assert.ok(spy.secondCall.calledWith({ 'Logged In': false }));
+    assert.ok(spy.firstCall.calledWith({ 'Logged In': 'true' }));
+    assert.ok(spy.secondCall.calledWith({ 'Logged In': 'false' }));
 
     service.setLoggedIn('something else');
     assert.equal(spy.callCount, 2, 'invalid arguments are not pushed into the dataLayer');
