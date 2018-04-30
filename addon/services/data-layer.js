@@ -52,6 +52,7 @@ export default Service.extend({
           'Show Name': null,
           'Story Title': null,
           'Story Template': null,
+          'Story Series': null,
           'Item Type': null,
           'ID': null,
           'Major Tags': null,
@@ -161,6 +162,7 @@ export default Service.extend({
     values['Show Name'] = get(story, 'showTitle') || get(story, 'channelTitle') || 'NPR Article?';
     values['Story Title'] = get(story, 'title')
     values['Story Template'] = get(story, 'template');
+    values['Story Series'] = get(story, 'series').map(s => s.title).join(', ');
 
     // for NPR
     let nprVals = get(story, 'nprAnalyticsDimensions');

@@ -27,7 +27,8 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       nprAnalyticsDimensions: [...new Array(4),'news', ...new Array(2), '1', null, true, null, null, 150, '5'],
       itemType: 'episode',
       cmsPK: 500,
-      tags: ['politics', 'entertainment']
+      tags: ['politics', 'entertainment'],
+      series: [{title: 'Boo Series'}, {title: 'Baz'}]
     };
 
     this.mock(window.dataLayer).expects('push').once().withArgs({
@@ -36,6 +37,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Show Name': story.showTitle,
       'Story Title': story.title,
       'Story Template': 'default',
+      'Story Series': 'Boo Series, Baz',
       'Item Type': 'episode',
       'ID': '500',
       'Major Tags': 'news',
@@ -57,6 +59,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Show Name': null,
       'Story Title': null,
       'Story Template': null,
+      'Story Series': null,
       'Item Type': null,
       'ID': null,
       'Major Tags': null,
