@@ -55,19 +55,15 @@ export default Service.extend({
     ----------------------------------------------------------------------------------*/
 
   _onCurrentSoundChanged(currentSound, previousSound) {
-    let currentType     = get(currentSound, 'metadata.contentModelType');
-    let currentContext  = get(currentSound, 'metadata.playContext');
+    let currentType = get(currentSound, 'metadata.contentModelType');
 
     let previousType;
     if (previousSound) {
-      previousType    = get(previousSound, 'metadata.contentModelType');
+      previousType = get(previousSound, 'metadata.contentModelType');
     }
 
     if (previousType === 'stream' && currentType === 'stream' && currentSound !== previousSound) {
       this._onStreamSwitch(previousSound, currentSound);
-    }
-    else if (previousType === 'bumper' && currentContext === 'queue') {
-      this._onQueueAutoplay();
     }
   },
 
@@ -231,13 +227,6 @@ export default Service.extend({
     });
 
     this._sendListenAction(sound, 'pause');
-  },
-
-  _onQueueAutoplay() {
-    this._trackPlayerEvent({
-      action: 'Launched Queue',
-      label: 'Continuous Play'
-    });
   },
 
   _onPlayerPing() {
