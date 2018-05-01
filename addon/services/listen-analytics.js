@@ -256,11 +256,9 @@ export default Service.extend({
   },
 
   _trackCodecFailure({connectionName, error, url}, sound) {
-    let story = get(sound, 'metadata.contentModel');
     let action = `Codec Failure | ${connectionName}`;
     let label = `reason: ${error} | bad url: ${url} | ${sound ? `good url: ${get(sound, 'url')}` : 'no successful url'}`;
 
-    this._trackPlayerEvent({story, action, label});
     this._pushToDataLayer({type:'audioError', errorType: action, errorDetails: label})
   },
 
