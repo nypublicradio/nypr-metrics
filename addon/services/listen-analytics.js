@@ -2,17 +2,15 @@ import Ember from 'ember';
 import Service, { inject } from '@ember/service';
 import { A } from '@ember/array';
 import $ from 'jquery';
-import { get, set, getWithDefault } from '@ember/object';
+import { get, set } from '@ember/object';
 import { reads } from '@ember/object/computed';
 import { bind, debounce } from '@ember/runloop';
-import { classify as upperCamelize } from '@ember/string';
 
 const TWO_MINUTES     = 1000 * 60 * 2;
 
 export default Service.extend({
   hifi        : inject(),
   dataPipeline: inject(),
-  metrics     : inject(),
   dataLayer   : inject('nypr-metrics/data-layer'),
   poll        : inject(),
   currentSound: reads('hifi.currentSound'),
