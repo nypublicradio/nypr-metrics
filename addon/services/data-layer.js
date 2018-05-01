@@ -211,7 +211,7 @@ export default Service.extend({
   _audioEventForType(soundObject) {
     let { contentModelType:type, contentModel:model, playContext:source } = get(soundObject, 'metadata');
 
-    if (!['discover', 'Continuous Play', 'queue'].includes(source)) {
+    if (!['discover', 'Continuous Play', 'queue', 'history'].includes(source)) {
       source = null;
     }
 
