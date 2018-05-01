@@ -211,11 +211,6 @@ export default Service.extend({
     }
   },
 
-  trackStreamData() {
-    console.warn('trackStreamData called'); // eslint-disable-line
-  },
-
-
   /* Tracking helpers ---------------------------------------------------------
     --------------------------------------------------------------------------*/
 
@@ -262,27 +257,6 @@ export default Service.extend({
     this._pushToDataLayer({type:'audioError', errorType: action, errorDetails: label})
   },
 
-  _trackPlayerEvent(options) {
-    let {action, label, withRegion, region, withAnalytics} = options;
-    let analyticsCode  = '';
-    let story          = options.story || get(this, 'currentAudio');
-    let category       = options.category || 'Persistent Player';
-
-    // Ignore event if it's missing a region but should have one.
-    // Assume it was fired from player internals and shouldn't be logged.
-    if (withRegion && !region) { return; }
-    region = withRegion ? region + ':' : '';
-    if (withAnalytics) {
-      analyticsCode = get(story, 'analyticsCode');
-    }
-    if (withRegion || withAnalytics) {
-      label = `${region}${analyticsCode}`;
-    }
-
-    let metrics = get(this, 'metrics');
-    metrics.trackEvent('GoogleAnalytics', {category, action, label});
-  },
-
   _pushToDataLayer(data) {
     let queue = get(this, 'dataLayerQueue');
     queue.push(data);
@@ -311,19 +285,4 @@ export default Service.extend({
       set(this, 'dataLayerQueue', A());
     }
   },
-
-  _trackPlayerEventForNpr(options) {
-    let metrics = get(this, 'metrics');
-    metrics.trackEvent('NprAnalytics', options);
-  },
-
-  _formatContext(context) {
-    if (context === 'Continuous Play') {
-      return context;
-    } else if (context === 'nav') {
-      return 'Navigation';
-    } else if (context){
-      return upperCamelize(context);
-    }
-  }
 });
