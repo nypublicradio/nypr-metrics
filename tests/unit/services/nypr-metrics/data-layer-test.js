@@ -32,20 +32,20 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
     };
 
     this.mock(window.dataLayer).expects('push').once().withArgs({
-      'Authors': 'Foo Bar, Fuzz Buzz',
-      'Date Published': story.newsdate,
-      'Show Name': story.showTitle,
-      'Story Title': story.title,
-      'Story Template': 'default',
-      'Story Series': 'Boo Series, Baz',
-      'Item Type': 'episode',
-      'ID': '500',
-      'Major Tags': 'news',
-      'Tags': 'politics,entertainment',
-      'Org ID': '1',
-      'Has Audio': true,
-      'Word Count': 150,
-      'NPR ID': '5'
+      'Viewed Authors': 'Foo Bar, Fuzz Buzz',
+      'Viewed Date Published': story.newsdate,
+      'Viewed Show Title': story.showTitle,
+      'Viewed Story Title': story.title,
+      'Viewed Story Template': 'default',
+      'Viewed Story Series': 'Boo Series, Baz',
+      'Viewed Item Type': 'episode',
+      'Viewed ID': '500',
+      'Viewed Story Major Tags': 'news',
+      'Viewed Story Tags': 'politics,entertainment',
+      'Viewed Org ID': '1',
+      'Viewed Has Audio': true,
+      'Viewed Story Word Count': 150,
+      'Viewed NPR ID': '5'
     });
 
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
@@ -54,20 +54,20 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
 
   test('it clears the expected dataLayer values for a story', function() {
     this.mock(window.dataLayer).expects('push').once().withArgs({
-      'Authors': null,
-      'Date Published': null,
-      'Show Name': null,
-      'Story Title': null,
-      'Story Template': null,
-      'Story Series': null,
-      'Item Type': null,
-      'ID': null,
-      'Major Tags': null,
-      'Tags': null,
-      'Org ID': null,
-      'Has Audio': null,
-      'Word Count': null,
-      'NPR ID': null,
+      'Viewed Authors': null,
+      'Viewed Date Published': null,
+      'Viewed Show Title': null,
+      'Viewed Story Title': null,
+      'Viewed Story Template': null,
+      'Viewed Story Series': null,
+      'Viewed Item Type': null,
+      'Viewed ID': null,
+      'Viewed Story Major Tags': null,
+      'Viewed Story Tags': null,
+      'Viewed Org ID': null,
+      'Viewed Has Audio': null,
+      'Viewed Story Word Count': null,
+      'Viewed NPR ID': null,
     });
 
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
@@ -82,15 +82,15 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
     };
 
     this.mock(window.dataLayer).expects('push').once().withArgs({
-      'Show Name': show.title,
-      'Item Type': 'show',
-      'ID': '100',
-      'Major Tags': 'none',
-      'Tags': 'none',
-      'Org ID': '0',
-      'Has Audio': '0',
-      'Word Count': 'none',
-      'NPR ID': 'none',
+      'Viewed Show Title': show.title,
+      'Viewed Item Type': 'show',
+      'Viewed ID': '100',
+      'Viewed Story Major Tags': 'none',
+      'Viewed Story Tags': 'none',
+      'Viewed Org ID': '0',
+      'Viewed Has Audio': '0',
+      'Viewed Story Word Count': 'none',
+      'Viewed NPR ID': 'none',
     });
 
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
@@ -99,18 +99,18 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
 
   test('it clears the expected dataLayer values for a show', function() {
     this.mock(window.dataLayer).expects('push').once().withArgs({
-      'Show Name': null,
-      'Item Type': null,
-      'ID': null,
-      'Major Tags': null,
-      'Tags': null,
-      'Org ID': null,
-      'Has Audio': null,
-      'Word Count': null,
-      'NPR ID': null,
-      'Article Channel Name': null,
-      'Series Name': null,
-      'Tag Name': null,
+      'Viewed Show Title': null,
+      'Viewed Item Type': null,
+      'Viewed ID': null,
+      'Viewed Org ID': null,
+      'Viewed Has Audio': null,
+      'Viewed NPR ID': null,
+      'Viewed Article Channel Title': null,
+      'Viewed Series Title': null,
+      'Viewed Story Major Tags': null,
+      'Viewed Story Tags': null,
+      'Viewed Story Word Count': null,
+      'Viewed Tag Title': null,
     });
 
     let service = this.owner.lookup('service:nypr-metrics/data-layer');
@@ -164,7 +164,8 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
           showTitle: 'Foo Show',
           title: 'Foo Title'
         }
-      }
+      },
+      url: 'http://ondemand.mp3'
     };
 
     const streamSound = {
@@ -177,7 +178,8 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
             showTitle: 'Bar Show',
           }
         },
-      }
+      },
+      url: 'http://livestream.aac'
     };
 
     let spy = this.spy(window.dataLayer, 'push');
@@ -195,44 +197,49 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
 
     assert.ok(calls[0].calledWith({
       event: 'On Demand Audio Playback',
-      'Playback State': 'play',
+      'Audio Playback State': 'play',
       'Audio Story Title': onDemandSound.metadata.contentModel.title,
       'Audio Show Title': onDemandSound.metadata.contentModel.showTitle,
-      'Playback Source': null,
+      'Audio URL': 'http://ondemand.mp3',
+      'Audio Playback Source': null,
     }), 'on demand play');
 
     assert.ok(calls[1].calledWith({
       event: 'Livestream Audio Playback',
-      'Playback State': 'play',
+      'Audio Playback State': 'play',
       'Audio Story Title': 'Foo Episode',
       'Audio Show Title': 'Bar Show',
-      'Audio Stream Name': 'Stream Name',
-      'Playback Source': null,
+      'Audio Stream Title': 'Stream Name',
+      'Audio URL': 'http://livestream.aac',
+      'Audio Playback Source': null,
     }), 'livestream play');
 
     assert.ok(calls[2].calledWith({
       event: 'On Demand Audio Playback',
-      'Playback State': 'pause',
+      'Audio Playback State': 'pause',
       'Audio Story Title': onDemandSound.metadata.contentModel.title,
       'Audio Show Title': onDemandSound.metadata.contentModel.showTitle,
-      'Playback Source': null,
+      'Audio Playback Source': null,
+      'Audio URL': 'http://ondemand.mp3',
     }), 'on demand pause');
 
     assert.ok(calls[3].calledWith({
       event: 'Livestream Audio Playback',
-      'Playback State': 'pause',
+      'Audio Playback State': 'pause',
       'Audio Story Title': 'Foo Episode',
       'Audio Show Title': 'Bar Show',
-      'Audio Stream Name': 'Stream Name',
-      'Playback Source': null,
+      'Audio Stream Title': 'Stream Name',
+      'Audio Playback Source': null,
+      'Audio URL': 'http://livestream.aac',
     }), 'livestream pause');
 
     assert.ok(calls[4].calledWith({
       event: 'On Demand Audio Playback',
-      'Playback State': 'end',
+      'Audio Playback State': 'end',
       'Audio Story Title': onDemandSound.metadata.contentModel.title,
       'Audio Show Title': onDemandSound.metadata.contentModel.showTitle,
-      'Playback Source': null,
+      'Audio Playback Source': null,
+      'Audio URL': 'http://ondemand.mp3',
     }), 'on demand end');
   });
 
