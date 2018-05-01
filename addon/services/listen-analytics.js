@@ -88,7 +88,10 @@ export default Service.extend({
       this._onStreamPlay(sound);
     }
     else if (type === 'bumper') {
-      this.get('dataLayer').trigger('Audio Bumper Play');
+      get(this, 'dataLayer').push({
+        event: 'Audio Bumper',
+        'Audio Playback State': 'play'
+      });
     }
   },
 
@@ -105,7 +108,10 @@ export default Service.extend({
     let type = get(sound, 'metadata.contentModelType');
 
     if (type === 'bumper') {
-      this._onBumperPause(sound);
+      get(this, 'dataLayer').push({
+        event: 'Audio Bumper',
+        'Audio Playback State': 'pause'
+      });
     }
     else if (type === 'stream') {
       this._onStreamPause(sound);
