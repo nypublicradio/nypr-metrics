@@ -100,7 +100,7 @@ export default Service.extend({
 
     if (type !== 'bumper') {
       this._sendListenAction(sound, 'finish');
-      this._pushToDataLayer({sound, type:'end'})
+      this._pushToDataLayer({sound, type: 'end'})
     }
   },
 
@@ -129,7 +129,7 @@ export default Service.extend({
 
   _onDemandPause(sound) {
     this._sendListenAction(sound, 'pause');
-    this._pushToDataLayer({sound, type:'pause'})
+    this._pushToDataLayer({sound, type: 'pause'})
   },
 
   _onDemandInterrupted(sound) {
