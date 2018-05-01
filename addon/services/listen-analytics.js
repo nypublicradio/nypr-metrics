@@ -161,15 +161,10 @@ export default Service.extend({
     let currentStreamName = get(currentStream, 'name');
 
     if (prevStreamName !== currentStreamName) {
-      this._trackPlayerEvent({
-        action: 'Switched Stream to Stream',
-        label: `from ${prevStreamName} to ${currentStreamName}`
-      });
-
-      this._trackPlayerEventForNpr({
-        category: 'Engagement',
-        action: 'Stream_Change',
-        label: `Streaming_${currentStreamName}`
+      get(this, 'dataLayer').push({
+        event: 'Audio Stream Change',
+        'Audio Previous Stream': prevStreamName,
+        'Audio Stream Title': currentStreamName,
       });
     }
   },
