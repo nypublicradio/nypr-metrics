@@ -176,7 +176,7 @@ export default Service.extend({
 
   _onPlayerPing() {
     if (get(this, 'hifi.isPlaying')) {
-      get(this, 'dataLayer').getDataLayer().push({event: 'playerPing'});
+      get(this, 'dataLayer').trigger('playerPing');
     }
   },
 
