@@ -216,16 +216,6 @@ export default Service.extend({
     }
   },
 
-  trackAddToQueue(story, region) {
-    this._trackPlayerEvent({
-      action: 'Add Story to Queue',
-      withRegion: true,
-      region,
-      withAnalytics: true,
-      story
-    });
-  },
-
   trackStreamData() {
     console.warn('trackStreamData called'); // eslint-disable-line
   },
