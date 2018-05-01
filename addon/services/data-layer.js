@@ -47,36 +47,36 @@ export default Service.extend({
     switch(type) {
       case 'story':
         dataLayer.push({
-          'Authors': null,
-          'Date Published': null,
-          'Show Name': null,
-          'Story Title': null,
-          'Story Template': null,
-          'Story Series': null,
-          'Item Type': null,
-          'ID': null,
-          'Major Tags': null,
-          'Tags': null,
-          'Org ID': null,
-          'Has Audio': null,
-          'Word Count': null,
-          'NPR ID': null,
+          'Viewed Authors': null,
+          'Viewed Date Published': null,
+          'Viewed Has Audio': null,
+          'Viewed ID': null,
+          'Viewed Item Type': null,
+          'Viewed NPR ID': null,
+          'Viewed Org ID': null,
+          'Viewed Show Title': null,
+          'Viewed Story Major Tags': null,
+          'Viewed Story Template': null,
+          'Viewed Story Title': null,
+          'Viewed Story Series': null,
+          'Viewed Story Tags': null,
+          'Viewed Story Word Count': null,
         });
         break;
       case 'show':
         dataLayer.push({
-          'Show Name': null,
-          'Item Type': null,
-          'ID': null,
-          'Major Tags': null,
-          'Tags': null,
-          'Org ID': null,
-          'Has Audio': null,
-          'Word Count': null,
-          'NPR ID': null,
-          'Article Channel Name': null,
-          'Series Name': null,
-          'Tag Name': null,
+          'Viewed Article Channel Title': null,
+          'Viewed Has Audio': null,
+          'Viewed ID': null,
+          'Viewed Item Type': null,
+          'Viewed NPR ID': null,
+          'Viewed Org ID': null,
+          'Viewed Tag Title': null,
+          'Viewed Show Title': null,
+          'Viewed Series Title': null,
+          'Viewed Story Major Tags': null,
+          'Viewed Story Tags': null,
+          'Viewed Story Word Count': null,
         });
         break;
     }
@@ -124,7 +124,7 @@ export default Service.extend({
     }
     let dataLayer = this.getDataLayer();
     let event = this._audioEventForType(soundObject);
-    event['Playback State'] = type;
+    event['Audio Playback State'] = type;
     dataLayer.push(event);
   },
 
@@ -157,23 +157,23 @@ export default Service.extend({
   _valuesForStory(story) {
     let values = {};
 
-    values['Authors'] = get(story, 'appearances.authors').map(a => a.name).join(', ');
-    values['Date Published'] = get(story, 'newsdate');
-    values['Show Name'] = get(story, 'showTitle') || get(story, 'channelTitle') || 'NPR Article?';
-    values['Story Title'] = get(story, 'title')
-    values['Story Template'] = get(story, 'template');
-    values['Story Series'] = get(story, 'series').map(s => s.title).join(', ');
+    values['Viewed Authors'] = get(story, 'appearances.authors').map(a => a.name).join(', ');
+    values['Viewed Date Published'] = get(story, 'newsdate');
+    values['Viewed Show Title'] = get(story, 'showTitle') || get(story, 'channelTitle') || 'NPR Article?';
+    values['Viewed Story Title'] = get(story, 'title')
+    values['Viewed Story Template'] = get(story, 'template');
+    values['Viewed Story Series'] = get(story, 'series').map(s => s.title).join(', ');
 
     // for NPR
     let nprVals = get(story, 'nprAnalyticsDimensions');
-    values['Item Type'] = get(story, 'itemType');
-    values['ID'] = get(story, 'cmsPK').toString();
-    values['Major Tags'] = nprVals[4];
-    values['Tags'] = get(story, 'tags').join(',');
-    values['Org ID'] = nprVals[7]
-    values['Has Audio'] = nprVals[9];
-    values['Word Count'] = nprVals[12];
-    values['NPR ID'] = nprVals[13];
+    values['Viewed Item Type'] = get(story, 'itemType');
+    values['Viewed ID'] = get(story, 'cmsPK').toString();
+    values['Viewed Story Major Tags'] = nprVals[4];
+    values['Viewed Story Tags'] = get(story, 'tags').join(',');
+    values['Viewed Org ID'] = nprVals[7]
+    values['Viewed Has Audio'] = nprVals[9];
+    values['Viewed Story Word Count'] = nprVals[12];
+    values['Viewed NPR ID'] = nprVals[13];
 
     return values;
   },
@@ -183,27 +183,27 @@ export default Service.extend({
 
     switch(get(container, 'itemType'))  {
       case 'show':
-        values['Show Name'] = get(container, 'title')
+        values['Viewed Show Title'] = get(container, 'title')
         break;
       case 'series':
-        values['Series Name'] = get(container, 'title')
+        values['Viewed Series Title'] = get(container, 'title')
         break;
       case 'articlechannel':
-        values['Article Channel Name'] = get(container, 'title')
+        values['Viewed Article Channel Title'] = get(container, 'title')
         break;
       case 'tag':
-        values['Tag Name'] = get(container, 'title');
+        values['Viewed Tag Title'] = get(container, 'title');
     }
 
     // for NPR
-    values['Item Type'] = get(container, 'itemType');
-    values['ID'] = get(container, 'cmsPK').toString();
-    values['Major Tags'] = 'none';
-    values['Tags'] = 'none';
-    values['Org ID'] = '0';
-    values['Has Audio'] = '0';
-    values['Word Count'] = 'none';
-    values['NPR ID'] = 'none';
+    values['Viewed Item Type'] = get(container, 'itemType');
+    values['Viewed ID'] = get(container, 'cmsPK').toString();
+    values['Viewed Story Major Tags'] = 'none';
+    values['Viewed Story Tags'] = 'none';
+    values['Viewed Org ID'] = '0';
+    values['Viewed Has Audio'] = '0';
+    values['Viewed Story Word Count'] = 'none';
+    values['Viewed NPR ID'] = 'none';
 
     return values;
   },
@@ -221,7 +221,7 @@ export default Service.extend({
           event: 'On Demand Audio Playback',
           'Audio Story Title': get(model, 'title'),
           'Audio Show Title': get(model, 'showTitle'),
-          'Playback Source': source,
+          'Audio Playback Source': source,
         };
       case 'stream':
         return {
@@ -229,7 +229,7 @@ export default Service.extend({
           'Audio Story Title': get(model, 'currentShow.episodeTitle'),
           'Audio Show Title': get(model, 'currentShow.showTitle'),
           'Audio Stream Name': get(model, 'name'),
-          'Playback Source': source,
+          'Audio Playback Source': source,
         };
     }
   }
