@@ -221,6 +221,7 @@ export default Service.extend({
           event: 'On Demand Audio Playback',
           'Audio Story Title': get(model, 'title'),
           'Audio Show Title': get(model, 'showTitle'),
+          'Audio URL': get(soundObject, 'url'),
           'Audio Playback Source': source,
         };
       case 'stream':
@@ -229,6 +230,7 @@ export default Service.extend({
           'Audio Story Title': get(model, 'currentShow.episodeTitle'),
           'Audio Show Title': get(model, 'currentShow.showTitle'),
           'Audio Stream Title': get(model, 'name'),
+          'Audio URL': get(soundObject, 'url'),
           'Audio Playback Source': source,
         };
     }
