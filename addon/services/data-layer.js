@@ -1,5 +1,8 @@
 import Service from '@ember/service';
 import { get } from '@ember/object';
+import config from 'ember-get-config';
+
+const DEFAULT_NPR_VALS = ['NYPR', ...Array(7), config.siteName, null, document.title, ...Array(3)];
 
 export default Service.extend({
   push(key, value) {
@@ -156,6 +159,7 @@ export default Service.extend({
 
   _valuesForStory(story) {
     let values = {};
+    let nprVals = get(story, 'nprAnalyticsDimensions') || DEFAULT_NPR_VALS;
 
     values['Viewed Authors'] = get(story, 'appearances.authors').map(a => a.name).join(', ');
     values['Viewed Date Published'] = get(story, 'newsdate');
@@ -165,7 +169,6 @@ export default Service.extend({
     values['Viewed Story Series'] = get(story, 'series').map(s => s.title).join(', ');
 
     // for NPR
-    let nprVals = get(story, 'nprAnalyticsDimensions');
     values['Viewed Item Type'] = get(story, 'itemType');
     values['Viewed ID'] = get(story, 'cmsPK').toString();
     values['Viewed Story Major Tags'] = nprVals[4];
