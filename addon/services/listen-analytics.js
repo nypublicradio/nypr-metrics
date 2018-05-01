@@ -123,41 +123,11 @@ export default Service.extend({
 
   _onDemandPlay(sound) {
     let action      = get(sound, 'hasPlayed') ? 'resume' : 'start';
-    let story       = get(sound, 'metadata.contentModel');
-    let playContext = getWithDefault(sound, 'metadata.playContext', "");
-
     this._sendListenAction(sound, action);
-    this._trackPlayerEventForNpr({
-      category: 'Engagement',
-      action: 'On_demand_audio_play',
-      label: get(story, 'audio'),
-      story
-    });
-
-    if (action === 'start' && (playContext === 'queue' || playContext === 'history')) {
-      let showTitle = get(story, 'showTitle') || get(story, 'headers.brand.title');
-      let storyTitle = get(story, 'title');
-
-      this._trackPlayerEvent({
-        action: 'Played Story from Queue',
-        label: `${showTitle}|${storyTitle}`,
-        story
-      });
-    }
-
     this._pushToDataLayer({sound, type: get(sound, 'hasPlayed') ? 'resume' : 'play'})
   },
 
   _onDemandPause(sound) {
-    let story       = get(sound, 'metadata.contentModel');
-
-    this._trackPlayerEventForNpr({
-      category: 'Engagement',
-      action: 'On_demand_audio_pause',
-      label: get(story, 'audio'),
-      story
-    });
-
     this._sendListenAction(sound, 'pause');
     this._pushToDataLayer({sound, type:'pause'})
   },
@@ -174,7 +144,6 @@ export default Service.extend({
     let previousId   = get(this, 'currentSound.metadata.contentId');
     let stream      = get(sound, 'metadata.contentModel');
     let streamId    = get(stream, 'id');
-    let streamName  = get(stream, 'name');
 
     if (streamId !== previousId) {
       this._pushToDataLayer({sound, type:'play'})
@@ -183,12 +152,6 @@ export default Service.extend({
     }
 
     this._sendListenAction(sound, 'start');
-
-    this._trackPlayerEventForNpr({
-      category: 'Engagement',
-      action: 'Stream_Play',
-      label: `Streaming_${streamName}`
-    });
   },
 
   _onStreamSwitch(previousSound, currentSound) {
@@ -212,27 +175,8 @@ export default Service.extend({
   },
 
   _onStreamPause(sound) {
-    let stream      = get(sound, 'metadata.contentModel');
-
-    this._trackPlayerEventForNpr({
-      category: 'Engagement',
-      action: 'Stream_Pause',
-      label: `Streaming_${get(stream, 'name')}`
-    });
-
     this._sendListenAction(sound, 'pause');
     this._pushToDataLayer({sound, type:'pause'})
-  },
-
-  _onBumperPause(sound) {
-    let bumperSetting = get(sound, 'metadata.autoPlayChoice');
-
-    this._trackPlayerEvent({
-      action: 'Paused Bumper',
-      label: `${bumperSetting}|Continuous Play`
-    });
-
-    this._sendListenAction(sound, 'pause');
   },
 
   _onPlayerPing() {
@@ -265,11 +209,6 @@ export default Service.extend({
   },
 
   trackSoundFailure({message, failures}) {
-    this._trackPlayerEvent({
-      action: 'Sound Error',
-      label: message
-    });
-
     this._pushToDataLayer({type:'audioError', errorType: "Sound Error", errorDetails: message});
 
     if (failures && failures.length) {
