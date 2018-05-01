@@ -228,7 +228,7 @@ export default Service.extend({
           event: 'Livestream Audio Playback',
           'Audio Story Title': get(model, 'currentShow.episodeTitle'),
           'Audio Show Title': get(model, 'currentShow.showTitle'),
-          'Audio Stream Name': get(model, 'name'),
+          'Audio Stream Title': get(model, 'name'),
           'Audio Playback Source': source,
         };
     }
