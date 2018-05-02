@@ -1,4 +1,7 @@
 # nypr-metrics Changelog
+## 0.4.0-beta
+- [ENHANCEMENT] major analytics upgrade
+
 ## 0.3.1
 - [BUGFIX] Fixed a missing `super` call in an init
 
