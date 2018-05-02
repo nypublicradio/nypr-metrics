@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.4.0-beta
+- [ENHANCEMENT] major analytics upgrade
+
 ## 0.3.2
 - [BUGFIX] send close event synchronously
 
