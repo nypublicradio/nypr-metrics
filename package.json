@@ -20,8 +20,7 @@
   },
   "dependencies": {
     "ember-cli-babel": "^6.6.0",
-    "ember-get-config": "^0.2.2",
-    "ember-metrics": "^0.12.1"
+    "ember-get-config": "^0.2.2"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
