@@ -548,7 +548,7 @@ test("it calls dataLayer.trackAudio with the correct params", function(assert) {
       }
     }
   });
-  
+
   const stream = EventedObject.create({
     metadata: {
       contentModelType: 'stream',
@@ -557,7 +557,7 @@ test("it calls dataLayer.trackAudio with the correct params", function(assert) {
       }
     }
   });
-  
+
   let spy = sinon.spy();
   let service = this.subject({
     dataLayer: {
@@ -565,29 +565,29 @@ test("it calls dataLayer.trackAudio with the correct params", function(assert) {
     }
   });
   let hifi = service.get("hifi");
-  
+
   run(() => {
     hifi.trigger('audio-played', onDemand);
     hifi.trigger('audio-played', stream);
-    
+
     hifi.trigger('audio-paused', onDemand);
     hifi.trigger('audio-paused', stream);
   });
-    
+
   later(() => {
     onDemand.set('hasPlayed', true);
     hifi.trigger('audio-played', onDemand);
     hifi.trigger('audio-ended', onDemand);
   }, 150);
-  
+
   wait().then(() => {
     let calls = spy.getCalls();
     assert.ok(calls[0].calledWith('play', onDemand), 'on demand play');
     assert.ok(calls[1].calledWith('play', stream), 'stream play');
-    
+
     assert.ok(calls[2].calledWith('pause', onDemand), 'on demand pause');
     assert.ok(calls[3].calledWith('pause', stream), 'stream pause');
-    
+
     onDemand.set('hasPlayed', true);
     assert.ok(calls[4].calledWith('resume', onDemand), 'on demand resume');
     assert.ok(calls[5].calledWith('end', onDemand), 'on demand end');
