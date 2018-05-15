@@ -594,3 +594,47 @@ test("it calls dataLayer.trackAudio with the correct params", function(assert) {
     done();
   });
 });
+
+test("service reports a close event synchronously", function(assert) {
+  let reportStub = sinon.stub();
+  let interceptor = {
+    dataPipeline: {
+      reportListenAction: reportStub
+    }
+  };
+
+  let service = this.subject(interceptor);
+  let hifi = service.get("hifi");
+
+  let metadata1 = {
+    contentModelType: "story",
+    contentId: 1,
+    contentModel: {
+
+    },
+    analytics: {
+      audio_type: "on_demand",
+      cms_id: 1,
+      item_type: "episode"
+    }
+  };
+
+
+  hifi.load("/good/1000/test.mp3", {metadata: metadata1}).then(({sound}) => {
+    service._sendListenAction(sound, 'start');
+    service._sendListenAction(sound, 'close');
+
+    let expectedCall = [
+      "close",
+      {
+        audio_type: "on_demand",
+        cms_id: 1,
+        item_type: "episode",
+        current_audio_position: 0
+      }
+    ];
+
+    assert.ok(reportStub.calledOnce);
+    assert.deepEqual(reportStub.firstCall.args, expectedCall, 'close should have the correct arguments');
+  });
+});
