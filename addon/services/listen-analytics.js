@@ -344,9 +344,15 @@ export default Service.extend({
       let analyticsData = Object.assign({
         current_audio_position: position
       }, sound.get('metadata.analytics'));
-      let queue = get(this, 'listenActionQueue')
-      queue.push({sound, type, analyticsData});
-      debounce(this, '_flushListenActions', 100);
+
+      if (type === 'close') {
+        // window is closing, no time to waste
+        this.get('dataPipeline').reportListenAction(type, analyticsData);
+      } else {
+        let queue = get(this, 'listenActionQueue')
+        queue.push({sound, type, analyticsData});
+        debounce(this, '_flushListenActions', 100);
+      }
     }
   },
 
