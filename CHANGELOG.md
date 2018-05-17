@@ -1,4 +1,8 @@
 # nypr-metrics Changelog
+
+## 0.3.2
+- [BUGFIX] send close event synchronously
+
 ## 0.3.1
 - [BUGFIX] Fixed a missing `super` call in an init
 
