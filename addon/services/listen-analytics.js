@@ -13,10 +13,15 @@ export default Service.extend({
   dataPipeline: inject(),
   dataLayer   : inject('nypr-metrics/data-layer'),
   poll        : inject(),
+  fastboot    : inject(),
   currentSound: reads('hifi.currentSound'),
+  isFastBoot  : reads('fastboot.isFastBoot'),
   sessionPing : TEN_MINUTES,
 
   init() {
+    if (get(this, 'isFastBoot')) {
+      return;
+    }
     get(this, 'poll').addPoll({
       interval: get(this, 'sessionPing'),
       callback: bind(this, '_onPlayerPing'),
