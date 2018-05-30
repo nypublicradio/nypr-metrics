@@ -81,7 +81,7 @@ jobs:
 
   test:
     <<: *defaults
-    working_directory: /home/circeci/nypr-metrics
+    working_directory: /home/circleci/nypr-metrics
     environment:
       CIRCLE_TEST_REPORTS: test-results
 
