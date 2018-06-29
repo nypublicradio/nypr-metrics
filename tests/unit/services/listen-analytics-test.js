@@ -597,13 +597,9 @@ module("Unit | Service | listen analytics", function(hooks) {
 
   test("service reports a close event synchronously", function(assert) {
     let reportStub = sinon.stub();
-    let interceptor = {
-      dataPipeline: {
-        reportListenAction: reportStub
-      }
-    };
 
-    let service = this.subject(interceptor);
+    this.dataPipeline.set('reportListenAction', reportStub);
+    let service = this.owner.lookup('service:listen-analytics')
     let hifi = service.get("hifi");
 
     let metadata1 = {
