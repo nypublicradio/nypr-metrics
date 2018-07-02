@@ -6,7 +6,7 @@ import { get, set } from '@ember/object';
 import { reads } from '@ember/object/computed';
 import { bind, debounce } from '@ember/runloop';
 
-const TWO_MINUTES     = 1000 * 60 * 2;
+const TEN_MINUTES     = 1000 * 60 * 10;
 
 export default Service.extend({
   hifi        : inject(),
@@ -14,7 +14,7 @@ export default Service.extend({
   dataLayer   : inject('nypr-metrics/data-layer'),
   poll        : inject(),
   currentSound: reads('hifi.currentSound'),
-  sessionPing : TWO_MINUTES,
+  sessionPing : TEN_MINUTES,
 
   init() {
     get(this, 'poll').addPoll({
