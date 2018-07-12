@@ -116,7 +116,7 @@ export default Service.extend({
       browser_id: get(this, 'browserId'),
       client: config.clientSlug,
       referrer: get(this, 'currentReferrer'),
-      external_referrer: document.referrer,
+      external_referrer: typeof document !== 'undefined'  && !!document.referrer ? document.referrer : '',
       url: location.toString(),
       site_id: config.siteId
     }, incoming);
