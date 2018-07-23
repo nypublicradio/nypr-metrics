@@ -126,13 +126,11 @@ export default Service.extend({
     let prevStreamName = get(previousStream, 'name');
     let currentStreamName = get(currentStream, 'name');
 
-    if (prevStreamName !== currentStreamName) {
-      get(this, 'dataLayer').push({
-        event: 'Audio Stream Change',
-        'Audio Previous Stream': prevStreamName,
-        'Audio Stream Title': currentStreamName,
-      });
-    }
+    get(this, 'dataLayer').push({
+      event: 'Audio Stream Change',
+      'Audio Previous Stream': prevStreamName,
+      'Audio Stream Title': currentStreamName,
+    });
   },
 
   _onPlayerPing() {
