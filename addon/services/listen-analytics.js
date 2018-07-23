@@ -87,12 +87,10 @@ export default Service.extend({
   },
 
   _onAudioEnded(sound) {
-    let type = get(sound, 'metadata.contentModelType');
+    let contentType = get(sound, 'metadata.contentModelType');
 
-    if (type !== 'bumper') {
-      this._sendListenAction(sound, 'finish');
-      this._pushToDataLayer({sound, type: 'end'})
-    }
+    this._sendListenAction(sound, 'finish');
+    this._pushToDataLayer({sound, type: 'end', bumper: contentType === 'bumper'});
   },
 
   _onAudioPaused(sound) {
