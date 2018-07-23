@@ -234,12 +234,18 @@ export default Service.extend({
     if (queue.length === 0) {
       return;
     }
-    queue.forEach(({type, sound, errorType, errorDetails}, index) => {
+    queue.forEach(({type, sound, errorType, errorDetails, bumper}, index) => {
       if (type === 'pause' && queue.slice(index).find(info => info.type === 'end')) {
         return;
       }
       else if (type === 'audioError') {
         get(this, 'dataLayer').audioErrorTracking(errorType, errorDetails);
+      }
+      else if (bumper) {
+        get(this, 'dataLayer').push({
+          event:                  'Audio Bumper',
+          'Audio Playback State': type,
+        });
       }
       else {
         get(this, 'dataLayer').audioTracking(type, sound);
