@@ -104,14 +104,14 @@ module("Unit | Service | listen analytics", function(hooks) {
     assert.equal(spy.callCount, 2);
   });
 
-  test("it calls _onDemandInterrupted when audio is interrupted", function(
+  test("it calls _sendListenAction with 'interrupt' when audio is interrupted", function(
     assert
   ) {
     let interceptor = {
-      _onDemandInterrupted: function() {}
+      _sendListenAction: function() {}
     };
 
-    let interruptSpy = sinon.stub(interceptor, "_onDemandInterrupted");
+    let interruptSpy = sinon.stub(interceptor, "_sendListenAction");
     let service = this.owner.factoryFor("service:listen-analytics").create(interceptor);
     let hifi = service.get("hifi");
     let done = assert.async();
@@ -131,9 +131,9 @@ module("Unit | Service | listen analytics", function(hooks) {
     run(() => {
       hifi.play("/good/15000/test1.mp3", { metadata: metadata1 }).then(() => {
         hifi.play("/good/12000/test2.mp3", { metadata: metadata2 }).then(() => {
-          assert.equal(
-            interruptSpy.callCount,
-            1,
+          let call = interruptSpy.getCalls().find(call => call.args.includes('interrupt'));
+          assert.ok(
+            call,
             "on demand interrupted should have been called"
           );
           done();
@@ -142,15 +142,15 @@ module("Unit | Service | listen analytics", function(hooks) {
     });
   });
 
-  test("it does not call _onDemandInterrupted when audio is paused beforehand", function(
+  test("it does not call _sendListenAction with 'interrupt' when audio is paused beforehand", function(
     assert
   ) {
     let done = assert.async();
     let interceptor = {
-      _onDemandInterrupted: function() {}
+      _sendListenAction: function() {}
     };
 
-    let interruptSpy = sinon.stub(interceptor, "_onDemandInterrupted");
+    let interruptSpy = sinon.stub(interceptor, "_sendListenAction");
     let service = this.owner.factoryFor("service:listen-analytics").create(interceptor);
     let hifi = service.get("hifi");
 
@@ -169,11 +169,7 @@ module("Unit | Service | listen analytics", function(hooks) {
     hifi.play("/good/15000/test1.mp3", { metadata: metadata1 }).then(({ sound }) => {
       sound.pause();
       hifi.play("/good/12000/test2.mp3", { metadata: metadata2 }).then(() => {
-        assert.equal(
-          interruptSpy.callCount,
-          0,
-          "on demand interrupted should not have been called"
-        );
+        interruptSpy.getCalls().forEach(call => assert.notOk(call.args.includes('interrupt')));
         done();
       });
     });
