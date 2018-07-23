@@ -66,14 +66,7 @@ export default Service.extend({
   },
 
   _onCurrentSoundInterrupted(currentSound) {
-    let type = get(currentSound, 'metadata.contentModelType');
-
-    if (type === 'story') { // on demand
-      this._onDemandInterrupted(currentSound);
-    }
-    else if (type === 'stream') {
-      this._onStreamInterrupted(currentSound);
-    }
+    this._sendListenAction(currentSound, 'interrupt');
   },
 
   _onAudioPlayed(sound) {
@@ -128,14 +121,6 @@ export default Service.extend({
   _onDemandPause(sound) {
     this._sendListenAction(sound, 'pause');
     this._pushToDataLayer({sound, type: 'pause'})
-  },
-
-  _onDemandInterrupted(sound) {
-    this._sendListenAction(sound, 'interrupt');
-  },
-
-  _onStreamInterrupted(sound) {
-    this._sendListenAction(sound, 'interrupt');
   },
 
   _onStreamPlay(sound) {
