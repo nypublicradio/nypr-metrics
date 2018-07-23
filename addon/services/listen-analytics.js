@@ -96,31 +96,16 @@ export default Service.extend({
   },
 
   _onAudioPaused(sound) {
-    let type = get(sound, 'metadata.contentModelType');
+    let contentType = get(sound, 'metadata.contentModelType');
 
-    if (type === 'bumper') {
-      get(this, 'dataLayer').push({
-        event: 'Audio Bumper',
-        'Audio Playback State': 'pause'
-      });
-    }
-    else if (type === 'stream') {
-      this._onStreamPause(sound);
-    }
-    else if (type === 'story') {
-      this._onDemandPause(sound);
-    }
+    this._sendListenAction(sound, 'pause');
+    this._pushToDataLayer({sound, type: 'pause', bumper: contentType === 'bumper'});
   },
 
   _onDemandPlay(sound) {
     let action      = get(sound, 'hasPlayed') ? 'resume' : 'start';
     this._sendListenAction(sound, action);
     this._pushToDataLayer({sound, type: get(sound, 'hasPlayed') ? 'resume' : 'play'})
-  },
-
-  _onDemandPause(sound) {
-    this._sendListenAction(sound, 'pause');
-    this._pushToDataLayer({sound, type: 'pause'})
   },
 
   _onStreamPlay(sound) {
@@ -150,11 +135,6 @@ export default Service.extend({
         'Audio Stream Title': currentStreamName,
       });
     }
-  },
-
-  _onStreamPause(sound) {
-    this._sendListenAction(sound, 'pause');
-    this._pushToDataLayer({sound, type:'pause'})
   },
 
   _onPlayerPing() {
