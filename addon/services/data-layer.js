@@ -226,7 +226,7 @@ export default Service.extend({
         return {
           event: 'On Demand Audio Playback',
           'Audio Story Title': get(model, 'title'),
-          'Audio Show Title': get(model, 'showTitle') || get(model, 'channelTitle'),
+          'Audio Show Title': get(model, 'showTitle') || get(model, 'channelTitle') || 'NPR Article',
           'Audio URL': get(soundObject, 'url'),
           'Audio Playback Source': source,
         };
