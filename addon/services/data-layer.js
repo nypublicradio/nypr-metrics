@@ -166,7 +166,7 @@ export default Service.extend({
 
     values['Viewed Authors'] = get(story, 'appearances.authors').map(a => a.name).join(', ');
     values['Viewed Date Published'] = get(story, 'newsdate');
-    values['Viewed Show Title'] = get(story, 'showTitle') || get(story, 'channelTitle') || 'NPR Article?';
+    values['Viewed Show Title'] = get(story, 'showTitle') || get(story, 'channelTitle') || 'NPR Article';
     values['Viewed Story Title'] = get(story, 'title')
     values['Viewed Story Template'] = get(story, 'template');
     values['Viewed Story Series'] = get(story, 'series').map(s => s.title).join(', ');
