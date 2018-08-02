@@ -233,7 +233,7 @@ export default Service.extend({
       case 'stream':
         return {
           event: 'Livestream Audio Playback',
-          'Audio Story Title': get(model, 'currentShow.episodeTitle') || DEFAULT_STREAM_STORY,
+          'Audio Story Title': get(model, 'currentShow.episodeTitle') || get(model, 'currentPiece') || DEFAULT_STREAM_STORY,
           'Audio Show Title': get(model, 'currentShow.showTitle'),
           'Audio Stream Title': get(model, 'name'),
           'Audio URL': get(soundObject, 'url'),
