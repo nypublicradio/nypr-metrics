@@ -1,6 +1,6 @@
 # nypr-metrics Changelog
 
-## 0.4.0-beta
+## 0.4.0
 - [ENHANCEMENT] major analytics upgrade
 
 ## 0.3.2
