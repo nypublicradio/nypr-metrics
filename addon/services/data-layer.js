@@ -2,7 +2,6 @@ import Service from '@ember/service';
 import { get } from '@ember/object';
 import config from 'ember-get-config';
 
-const DEFAULT_NPR_VALS = ['NYPR', ...Array(7), config.siteName, null, document.title, ...Array(3)];
 const DEFAULT_STREAM_STORY = '[no title available: BBC or NPR broadcast]';
 
 export default Service.extend({
@@ -161,6 +160,8 @@ export default Service.extend({
   },
 
   _valuesForStory(story) {
+    const DEFAULT_NPR_VALS = ['NYPR', ...Array(7), config.siteName, null, document.title, ...Array(3)];
+
     let values = {};
     let nprVals = get(story, 'nprAnalyticsDimensions') || DEFAULT_NPR_VALS;
 
