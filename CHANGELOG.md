@@ -2,6 +2,11 @@
 
 ## 0.4.0
 - [ENHANCEMENT] major analytics upgrade
+- [ENHANCEMENT] package metrics for NPR
+- [CHORE] remove metrics-adapters
+- [ENHANCEMENT] package metrics for new GTM spec
+- [FEATURE] new `data-layer` APIs: `trigger`, `send404`
+- [ENHANCEMENT] integrate `data-layer` with other analytics services
 
 ## 0.3.2
 - [BUGFIX] send close event synchronously
