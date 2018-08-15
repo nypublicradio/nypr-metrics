@@ -151,7 +151,7 @@ export default Service.extend({
   getDataLayer() {
     if (!window.dataLayer) {
       if (!window.runningTests) {
-        if (document) {
+        if (typeof document !== 'undefined') {
           console.warn('No global dataLayer available'); // eslint-disable-line
         }
       }
