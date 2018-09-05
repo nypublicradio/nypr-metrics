@@ -3,7 +3,6 @@ import fetch from 'fetch';
 import config from 'ember-get-config';
 import { next } from '@ember/runloop';
 import { get, set } from '@ember/object';
-import { reads } from '@ember/object/computed';
 
 const LISTEN_ACTIONS = {
   START: 'start',
@@ -22,9 +21,6 @@ export default Service.extend({
   listenActionPath: 'v1/events/listened',
   currentReferrer:  null,
   poll:         inject(),
-  fastboot: inject(),
-  isFastBoot: reads('fastboot.isFastBoot'),
-
 
   init() {
     set(this, '_delta', 0);
@@ -114,7 +110,7 @@ export default Service.extend({
   },
 
   _generateData(incoming, action) {
-    if (this.get('isFastBoot')) {
+    if (typeof document === 'undefined') {
       return false;
     }
 
@@ -123,7 +119,7 @@ export default Service.extend({
       browser_id: get(this, 'browserId'),
       client: config.clientSlug,
       referrer: get(this, 'currentReferrer'),
-      external_referrer: typeof document !== 'undefined'  && !!document.referrer ? document.referrer : '',
+      external_referrer: document.referrer || '',
       url: location.toString(),
       site_id: config.siteId
     }, incoming);
