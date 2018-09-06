@@ -36,6 +36,10 @@ export default Service.extend({
 
   reportItemView(incoming = {}) {
     next(() => {
+      if (typeof document === 'undefined') {
+        return; // don't run in fastboot
+      }
+
       let data = this._generateData(incoming);
       this._send(data, this.itemViewPath);
 
@@ -46,6 +50,10 @@ export default Service.extend({
   },
 
   reportListenAction(type, incoming = {}) {
+    if (typeof document === 'undefined') {
+      return; // don't run in fastboot
+    }
+
     incoming.delta = this.updateDelta(type);
     let data = this._generateData(incoming, LISTEN_ACTIONS[type.toUpperCase()]);
     this._send(data, this.listenActionPath);
@@ -110,10 +118,6 @@ export default Service.extend({
   },
 
   _generateData(incoming, action) {
-    if (typeof document === 'undefined') {
-      return false;
-    }
-
     let data = Object.assign({
       action,
       browser_id: get(this, 'browserId'),
