@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.5.0
+- [ENHANCEMENT] Fastboot compatibility
+
 ## 0.4.0
 - [ENHANCEMENT] major analytics upgrade
 - [ENHANCEMENT] package metrics for NPR
