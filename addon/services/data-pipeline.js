@@ -20,7 +20,6 @@ export default Service.extend({
   itemViewPath:     'v1/events/viewed',
   listenActionPath: 'v1/events/listened',
   currentReferrer:  null,
-
   poll:         inject(),
 
   init() {
@@ -37,6 +36,10 @@ export default Service.extend({
 
   reportItemView(incoming = {}) {
     next(() => {
+      if (typeof document === 'undefined') {
+        return; // don't run in fastboot
+      }
+
       let data = this._generateData(incoming);
       this._send(data, this.itemViewPath);
 
@@ -47,6 +50,10 @@ export default Service.extend({
   },
 
   reportListenAction(type, incoming = {}) {
+    if (typeof document === 'undefined') {
+      return; // don't run in fastboot
+    }
+
     incoming.delta = this.updateDelta(type);
     let data = this._generateData(incoming, LISTEN_ACTIONS[type.toUpperCase()]);
     this._send(data, this.listenActionPath);
@@ -116,7 +123,7 @@ export default Service.extend({
       browser_id: get(this, 'browserId'),
       client: config.clientSlug,
       referrer: get(this, 'currentReferrer'),
-      external_referrer: document.referrer,
+      external_referrer: document.referrer || '',
       url: location.toString(),
       site_id: config.siteId
     }, incoming);

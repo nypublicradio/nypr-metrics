@@ -17,6 +17,10 @@ export default Service.extend({
   sessionPing : TEN_MINUTES,
 
   init() {
+    if (typeof document === 'undefined') {
+      return; // don't run in fastboot
+    }
+
     get(this, 'poll').addPoll({
       interval: get(this, 'sessionPing'),
       callback: bind(this, '_onPlayerPing'),
