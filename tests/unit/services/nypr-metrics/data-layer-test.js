@@ -22,6 +22,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       },
       newsdate: '2017-01-01',
       showTitle: 'Baz Buz',
+      show: 'baz-buz',
       title: 'Bing Bang',
       template: 'default',
       nprAnalyticsDimensions: [...new Array(4),'news', ...new Array(2), '1', null, true, null, null, 150, '5'],
@@ -35,6 +36,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Viewed Authors': 'Foo Bar, Fuzz Buzz',
       'Viewed Date Published': story.newsdate,
       'Viewed Show Title': story.showTitle,
+      'Viewed Show Slug': story.show,
       'Viewed Story Title': story.title,
       'Viewed Story Template': 'default',
       'Viewed Story Series': 'Boo Series, Baz',
@@ -57,6 +59,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Viewed Authors': null,
       'Viewed Date Published': null,
       'Viewed Show Title': null,
+      'Viewed Show Slug': null,
       'Viewed Story Title': null,
       'Viewed Story Template': null,
       'Viewed Story Series': null,
@@ -77,12 +80,14 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
   test('it sets the expected dataLayer values for a show', function() {
     const show = {
       title: 'Foo Show',
+      slug: 'fooshow',
       itemType: 'show',
       cmsPK: 100,
     };
 
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Viewed Show Title': show.title,
+      'Viewed Show Slug': show.slug,
       'Viewed Item Type': 'show',
       'Viewed ID': '100',
       'Viewed Story Major Tags': 'none',
@@ -100,6 +105,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
   test('it clears the expected dataLayer values for a show', function() {
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Viewed Show Title': null,
+      'Viewed Show Slug': null,
       'Viewed Item Type': null,
       'Viewed ID': null,
       'Viewed Org ID': null,
