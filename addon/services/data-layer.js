@@ -58,7 +58,7 @@ export default Service.extend({
           'Viewed NPR ID': null,
           'Viewed Org ID': null,
           'Viewed Show Title': null,
-          'Viewed Show Slug': null,
+          'Viewed Container Slug': null,
           'Viewed Story Major Tags': null,
           'Viewed Story Template': null,
           'Viewed Story Title': null,
@@ -77,7 +77,7 @@ export default Service.extend({
           'Viewed Org ID': null,
           'Viewed Tag Title': null,
           'Viewed Show Title': null,
-          'Viewed Show Slug': null,
+          'Viewed Container Slug': null,
           'Viewed Series Title': null,
           'Viewed Story Major Tags': null,
           'Viewed Story Tags': null,
@@ -172,7 +172,7 @@ export default Service.extend({
     values['Viewed Authors'] = get(story, 'appearances.authors').map(a => a.name).join(', ');
     values['Viewed Date Published'] = get(story, 'newsdate');
     values['Viewed Show Title'] = get(story, 'showTitle') || get(story, 'channelTitle') || 'NPR Article';
-    values['Viewed Show Slug'] = get(story, 'show') || get(story, 'channel');
+    values['Viewed Container Slug'] = get(story, 'show') || get(story, 'channel');
     values['Viewed Story Title'] = get(story, 'title')
     values['Viewed Story Template'] = get(story, 'template');
     values['Viewed Story Series'] = get(story, 'series').map(s => s.title).join(', ');
@@ -207,7 +207,7 @@ export default Service.extend({
         values['Viewed Tag Title'] = get(container, 'title');
     }
 
-    values['Viewed Show Slug'] = get(container, 'slug');
+    values['Viewed Container Slug'] = get(container, 'slug');
 
     // for NPR
     values['Viewed Item Type'] = get(container, 'itemType');

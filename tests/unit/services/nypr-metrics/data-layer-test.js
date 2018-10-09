@@ -36,7 +36,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Viewed Authors': 'Foo Bar, Fuzz Buzz',
       'Viewed Date Published': story.newsdate,
       'Viewed Show Title': story.showTitle,
-      'Viewed Show Slug': story.show,
+      'Viewed Container Slug': story.show,
       'Viewed Story Title': story.title,
       'Viewed Story Template': 'default',
       'Viewed Story Series': 'Boo Series, Baz',
@@ -59,7 +59,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Viewed Authors': null,
       'Viewed Date Published': null,
       'Viewed Show Title': null,
-      'Viewed Show Slug': null,
+      'Viewed Container Slug': null,
       'Viewed Story Title': null,
       'Viewed Story Template': null,
       'Viewed Story Series': null,
@@ -87,7 +87,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
 
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Viewed Show Title': show.title,
-      'Viewed Show Slug': show.slug,
+      'Viewed Container Slug': show.slug,
       'Viewed Item Type': 'show',
       'Viewed ID': '100',
       'Viewed Story Major Tags': 'none',
@@ -105,7 +105,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
   test('it clears the expected dataLayer values for a show', function() {
     this.mock(window.dataLayer).expects('push').once().withArgs({
       'Viewed Show Title': null,
-      'Viewed Show Slug': null,
+      'Viewed Container Slug': null,
       'Viewed Item Type': null,
       'Viewed ID': null,
       'Viewed Org ID': null,
