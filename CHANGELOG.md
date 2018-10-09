@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.5.1
+- [ENHANCEMENT] include Container slug in GTM variables
+
 ## 0.5.0
 - [ENHANCEMENT] Fastboot compatibility
 
