@@ -10,6 +10,6 @@ export function initialize(appInstance) {
 }
 
 export default {
-  name: 'eager-load-services',
+  name: 'eager-load-analytics',
   initialize
 };
