@@ -223,7 +223,7 @@ export default Service.extend({
   },
 
   _audioEventForType(soundObject) {
-    let { contentModelType:type, contentModel:model, playContext:source, position } = get(soundObject, 'metadata');
+    let { contentModelType:type, contentModel:model, playContext:source, listPosition } = get(soundObject, 'metadata');
 
     if (!['discover', 'continuous-stream', 'continuous-queue', 'queue', 'history', 'playlist'].includes(source)) {
       source = null;
@@ -237,7 +237,7 @@ export default Service.extend({
           'Audio Show Title': get(model, 'showTitle') || get(model, 'channelTitle') || 'NPR Article',
           'Audio URL': get(soundObject, 'url'),
           'Audio Playback Source': source,
-          'Audio Playback Position': position,
+          'Audio Playback Position': listPosition,
         };
       case 'stream':
         return {
