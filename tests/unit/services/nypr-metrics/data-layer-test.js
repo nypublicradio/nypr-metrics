@@ -208,6 +208,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Audio Show Title': onDemandSound.metadata.contentModel.showTitle,
       'Audio URL': 'http://ondemand.mp3',
       'Audio Playback Source': null,
+      'Audio Playback Position': undefined,
     }), 'on demand play');
 
     assert.ok(calls[1].calledWith({
@@ -227,6 +228,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Audio Show Title': onDemandSound.metadata.contentModel.showTitle,
       'Audio Playback Source': null,
       'Audio URL': 'http://ondemand.mp3',
+      'Audio Playback Position': undefined,
     }), 'on demand pause');
 
     assert.ok(calls[3].calledWith({
@@ -246,6 +248,7 @@ module('Unit | Service | nypr metrics/data layer', function(hooks) {
       'Audio Show Title': onDemandSound.metadata.contentModel.showTitle,
       'Audio Playback Source': null,
       'Audio URL': 'http://ondemand.mp3',
+      'Audio Playback Position': undefined,
     }), 'on demand end');
   });
 
