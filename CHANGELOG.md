@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.5.4
+- [ENHANCEMENT] make `eager-load-services` opt-outable
+
 ## 0.5.3
 - [ENHANCEMENT] add list position tracking support to on demand audio analytics
 
