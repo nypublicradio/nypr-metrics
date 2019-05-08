@@ -75,6 +75,35 @@ This service is injected under the `nypr-metrics` namespace in order to maintain
 dataLayer: service('nypr-metrics/data-layer')
 ```
 
+**NOTE**
+This service only provides an API to Google Tag Manager's `dataLayer`. It is up to the end-user to actually implement GTM in their application, perhaps through an instance initializer and environment variable such as this:
+```js
+// app/instance-initializers/google-tag-manager.js
+import config from '../config/environment';
+
+export function initialize(/* appInstance */) {
+  if (typeof window !== 'undefined' && config.environment !== 'test') {
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer',config.googleTagManager);
+  }
+}
+
+export default {
+  initialize
+};
+```
+
+And don't forget to add the preview window iframe to your index.html
+```html
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<YOUR GTM CONTAINER ID>"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+```
+
 ### Methods
 #### `setForType(type, instance)`
 
