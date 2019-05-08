@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.5.3
+- [ENHANCEMENT] add list position tracking support to on demand audio analytics
+
 ## 0.5.2
 - [BUGFIX] rename `eager-load-services` so that it isn't clobbered by an instance initializer of the same name from `nypr-audio-services`
 
