@@ -10,7 +10,7 @@ register_nypr_metrics: &register_nypr_metrics
     command: cd /home/circleci/nypr-metrics && yarn link
 
 node_key: &node_key
-  key: node-deps-{{ arch }}-{{ checksum "yarn.lock" }}
+  key: node-deps-{{ arch }}-{{ checksum "yarn.lock" }}-{{ checksum "circle.yml" }}
 
 restore_node: &restore_node
   restore_cache:
@@ -29,24 +29,7 @@ save_node: &save_node
     <<: *node_key
     paths:
       - node_modules
-
-restore_bower: &restore_bower
-  restore_cache:
-    key: bower-deps-{{ arch }}-{{ checksum "bower.json" }}
-
-install_bower: &install_bower
-  run:
-    name: bower deps
-    command: |
-      if [ ! -d bower_components ]; then
-        npx bower i
-      fi
-
-save_bower: &save_bower
-  save_cache:
-    key: bower-deps-{{ arch }}-{{ checksum "bower.json" }}
-    paths:
-      - bower_components
+      - /home/circleci/.cache/Cypress
 
 build_modernizr: &build_modernizr
   run:
