@@ -29,6 +29,9 @@ export default Service.extend({
     let dataLayer = this.getDataLayer();
     let values;
     switch(type) {
+      case 'article':
+        values = this._valuesForArticle(instance);
+        break;
       case 'story':
         values = this._valuesForStory(instance);
         break;
@@ -48,6 +51,14 @@ export default Service.extend({
   clearForType(type) {
     let dataLayer = this.getDataLayer();
     switch(type) {
+      case 'article':
+        dataLayer.push({
+          articleTags: null,
+          articleAuthors: null,
+          articleSection: null,
+          articleTitle: null,
+        });
+        break;
       case 'story':
         dataLayer.push({
           'Viewed Authors': null,
@@ -161,6 +172,15 @@ export default Service.extend({
     } else {
       return window.dataLayer;
     }
+  },
+
+  _valuesForArticle(article) {
+    return {
+      articleTags: article.tags.join(','),
+      articleAuthors: article.authorNickname,
+      articleSection: article.section.label,
+      articleTitle: article.title,
+    };
   },
 
   _valuesForStory(story) {
