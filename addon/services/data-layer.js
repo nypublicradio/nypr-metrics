@@ -57,6 +57,7 @@ export default Service.extend({
           articleAuthors: null,
           articleSection: null,
           articleTitle: null,
+          articlePublishTime: null,
         });
         break;
       case 'story':
@@ -180,6 +181,7 @@ export default Service.extend({
       articleAuthors: article.authorNickname,
       articleSection: article.section.label,
       articleTitle: article.title,
+      articlePublishTime: article.publishedMoment.format('YYYY-MM-DDThh:mmZ'),
     };
   },
 
