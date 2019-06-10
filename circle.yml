@@ -99,7 +99,7 @@ jobs:
       - run:
           name: clone clients
           command: |
-            for client in wnyc wqxr new-sounds wnyc-studios; do
+            for client in wnyc wqxr new-sounds wnyc-studios gothamist; do
               git clone git@github.com:nypublicradio/$client-web-client
             done
       - persist_to_workspace:
@@ -109,6 +109,7 @@ jobs:
             - wqxr-web-client
             - new-sounds-web-client
             - wnyc-studios-web-client
+            - gothamist
 
   test_wnyc:
     <<: *defaults
@@ -220,6 +221,26 @@ jobs:
       - store_test_results:
           path: wnyc-studios-test-results/
 
+  test_gothamist:
+    <<: *defaults
+    working_directory: /home/circleci/gothamist
+    environment:
+      CIRCLE_TEST_REPORTS: gothamist-test-results
+
+    steps:
+      - <<: *attach
+      - <<: *register_nypr_metrics
+
+      - <<: *restore_node
+      - <<: *install_node
+      - <<: *save_node
+
+      - <<: *run_client_tests
+
+      - store_test_results:
+          path: gothamist-test-results/
+
+
 
 workflows:
   version: 2
@@ -258,5 +279,8 @@ workflows:
           requires:
             - setup_test_clients
       - test_new_sounds:
+          requires:
+            - setup_test_clients
+      - test_gothamist:
           requires:
             - setup_test_clients
