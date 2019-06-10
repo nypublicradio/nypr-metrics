@@ -1,5 +1,9 @@
 # nypr-metrics Changelog
 
+## 0.6.0
+- [ENHANCEMENT] add values for gothamist articles
+- [CHORE] remove bower
+
 ## 0.5.4
 - [ENHANCEMENT] make `eager-load-services` opt-outable
 
