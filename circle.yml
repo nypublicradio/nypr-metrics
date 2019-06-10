@@ -109,7 +109,7 @@ jobs:
             - wqxr-web-client
             - new-sounds-web-client
             - wnyc-studios-web-client
-            - gothamist
+            - gothamist-web-client
 
   test_wnyc:
     <<: *defaults
@@ -223,7 +223,7 @@ jobs:
 
   test_gothamist:
     <<: *defaults
-    working_directory: /home/circleci/gothamist
+    working_directory: /home/circleci/gothamist-web-client
     environment:
       CIRCLE_TEST_REPORTS: gothamist-test-results
 
