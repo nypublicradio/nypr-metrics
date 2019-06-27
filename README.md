@@ -8,6 +8,24 @@ Name | Type | Description
 `siteName` | String | Used by the `npr-analytics` metrics adapter as a data point.
 `metricsAdapters` | Array | Holds adapter specific options
 
+## Optional Config
+
+The `eager-load-services` initializer depends on audio-related addons to be installed. If you are not using it, the initializer maybe opted out by adding `disableEagerListenAnalytics: true` to your app's `config/environment.js` file like so:
+
+```js
+// config/environment.js
+module.exports = function(environment) {
+  let ENV = {
+    ...
+    'nypr-metrics': {
+      disableEagerListenAnalytics: true,
+    }
+    ...
+  }
+  ...
+};
+```
+
 
 ## metrics-adapters/npr-analytics
 The `npr-analytics` metrics adapter is designed to work with the `ember-metrics` addon, which is installed as part of the `nypr-metrics` addon as well. A config object for this metrics adapter **must** be added to the `metricsAdapters` array, like so:
