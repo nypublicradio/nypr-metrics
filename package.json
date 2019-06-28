@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "ember-cli-babel": "^7.0.0",
-    "ember-get-config": "^0.2.2"
+    "ember-get-config": "^0.2.2",
+    "ember-poll": "^1.2.0"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
@@ -41,7 +42,6 @@
     "ember-hifi": "^1.11.3",
     "ember-load-initializers": "^1.0.0",
     "ember-maybe-import-regenerator": "^0.1.6",
-    "ember-poll": "^1.2.0",
     "ember-resolver": "^4.0.0",
     "ember-sinon": "^1.0.1",
     "ember-sinon-qunit": "^2.0.0",
