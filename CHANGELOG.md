@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.6.1
+- [BUGFIX] put `ember-poll` in dependencies so upstream users have access
+
 ## 0.6.0
 - [ENHANCEMENT] add values for gothamist articles
 - [CHORE] remove bower
