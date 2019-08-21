@@ -177,11 +177,11 @@ export default Service.extend({
 
   _valuesForArticle(article) {
     return {
-      articleTags: article.tags.join(','),
-      articleAuthors: article.authorNickname,
-      articleSection: article.section.label,
+      articleTags: article.tags.map(t => t.name).join(','),
+      articleAuthors: article.authors.map(a => a.name).join(','),
+      articleSection: article.section.title,
       articleTitle: article.title,
-      articlePublishTime: article.publishedMoment.format('YYYY-MM-DDThh:mmZ'),
+      articlePublishTime: article.publicationDate.format('YYYY-MM-DDThh:mmZ'),
     };
   },
 
