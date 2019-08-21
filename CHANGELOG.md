@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.7.0
+- [CHORE] update article values to match wagtail
+
 ## 0.6.1
 - [BUGFIX] put `ember-poll` in dependencies so upstream users have access
 
