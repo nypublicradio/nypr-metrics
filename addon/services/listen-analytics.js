@@ -17,6 +17,7 @@ export default Service.extend({
   sessionPing : TEN_MINUTES,
 
   init() {
+    this._super(...arguments);
     if (typeof document === 'undefined') {
       return; // don't run in fastboot
     }
