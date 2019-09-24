@@ -48,8 +48,6 @@ export default Service.extend({
     get(this, 'hifi').on('audio-will-fast-forward',    bind(this, '_onAudioWillFastForward'));
     get(this, 'hifi').on('current-sound-interrupted',  bind(this, '_onCurrentSoundInterrupted'));
     get(this, 'hifi').on('current-sound-changed',      bind(this, '_onCurrentSoundChanged'));
-
-    this._super(...arguments);
   },
 
   /* Monitoring hifi events and then logging analytics -------------------------
