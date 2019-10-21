@@ -1,5 +1,8 @@
 # nypr-metrics Changelog
 
+## 0.7.1
+- [BUGFIX] Fix build error with not calling super in listen-analytics while in fastboot
+
 ## 0.7.0
 - [CHORE] update article values to match wagtail
 
