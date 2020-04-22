@@ -1,5 +1,7 @@
 # nypr-metrics
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/nypublicradio/nypr-metrics.svg)](https://greenkeeper.io/)
+
 ## Required Config Values
 
 Name | Type | Description
